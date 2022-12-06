@@ -13,6 +13,8 @@ html{
     font-size: 1.4rem;
     margin-left:15px;
 }
+
+
 .container{
     width:99.5%;
     background-color: aqua;
@@ -20,7 +22,7 @@ html{
     margin-right:auto;
     display:grid;
 	grid-template-columns: 1fr 300px;
-    
+
 	
 	align-items: start;
    
@@ -161,4 +163,28 @@ aside p{
     color: white;
     font-weight: 500;
     letter-spacing: 1.6px;
+}
+
+
+
+.containerofvideocapture{
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    height:712px;
+   
+    background-color: teal;
+
+    
+}
+
+.imgcontainer{
+    height:650px;
+}
+
+img{
+    height:100%;
 }

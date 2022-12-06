@@ -13,7 +13,7 @@ switch=1
 camera = cv2.VideoCapture(0)
 
 def gen_frames():  # generate frame by frame from camera
-    global out, capture,rec_frame
+    global out, capture
     while True:
         success, frame = camera.read() 
         if success:
@@ -21,7 +21,7 @@ def gen_frames():  # generate frame by frame from camera
                 capture=0
                 now = datetime.datetime.now()
                 #to save the image in the pc
-                p = os.path.sep.join(['capturedshots', "capturedshot_{}.png".format(str(now).replace(":",''))])
+                p = os.path.sep.join(['capture', "capture_{}.png".format(str(now).replace(":",''))])
                 cv2.imwrite(p, frame)
             
          
