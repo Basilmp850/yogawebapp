@@ -188,3 +188,11 @@ aside p{
 img{
     height:100%;
 }
+
+.uploadform{
+  display:flex;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
