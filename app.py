@@ -57,7 +57,25 @@ def video_feed():
 
 @app.route('/capturepose')
 def capture_pose():
-    return render_template('capturepose.html')
+    return render_template('Mainpages/capturepose.html')
+
+
+
+@app.route('/detection')
+def detection():
+    pass
+
+@app.route('/chronic')
+def chronic():
+    return render_template('Mainpages/chronic.html')
+
+@app.route('/benefits')
+def benefits():
+    pass
+
+@app.route('/preventionchronic')
+def preventionchronic():
+    pass
 
 
 @app.route('/requests',methods=['POST','GET'])
@@ -76,8 +94,8 @@ def tasks():
                 camera = cv2.VideoCapture(0)
                 switch=1       
     elif request.method=='GET':
-        return render_template('capturepose.html')
-    return render_template('capturepose.html')
+        return render_template('Mainpages/capturepose.html')
+    return render_template('Mainpages/capturepose.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

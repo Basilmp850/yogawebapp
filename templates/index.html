@@ -35,13 +35,13 @@
                 <h3>Yoga Posture Correction</h3>
                 <p>LIVE MONITORING OF YOGA POSTURE USING INTEGRATED AI WHICH GIVES INSTRUCTIONS FOR YOU TO PERFORM YOGASANA MORE EFFECTIVELY! </p>
                    
-                <button>Explore Now!</button>
+                <button type="button" onclick="window.location.href=`{{ url_for('capture_pose') }}`;">Explore Now!</button>
             </div>
             <div class="el el2">
                 <h3>Yoga posture detection</h3>
                 <p>PREDICTS THE CORRECT YOGA POSE FROM THE VIDEO UPLOADED BY THE USER!
                     </p>
-                <button type="button" onclick="window.location.href=`{{ url_for('capture_pose') }}`;">Explore Now!</button>
+             <button type="button" onclick="window.location.href=`{{ url_for('detection') }}`;">Explore Now!</button>
 
 
             </div>
@@ -49,13 +49,13 @@
                 <h3>Chronic Disease Detection</h3>
                 <p>DETECTION OF CHRONIC DISEASES FROM THE SYMPTOMS PROVIDED BY THE USER!
                     </p>
-                <button>Explore Now!</button>
+                    <button type="button" onclick="window.location.href=`{{ url_for('chronic') }}`;">Explore Now!</button>
             </div>
             <div class="el el4">
                 <h3>Yoga Recommendation from Benefits</h3>
                 <p>RECOMMENDS YOGA BASED ON USER'S SPECIFIC NEEDS!
                     </p>
-                <button>Explore Now!</button>
+                    <button type="button" onclick="window.location.href=`{{ url_for('benefits') }}`;">Explore Now!</button>
 
 
             </div>
@@ -63,7 +63,7 @@
                 <h3>Yoga Recommendation for Chronic Diseases</h3>
                 <p>RECOMMENDS YOGA FOR PREVENTING CHRONIC DISEASES!
                    </p>
-                <button>Explore Now!</button>
+                   <button type="button" onclick="window.location.href=`{{ url_for('preventionchronic') }}`;">Explore Now!</button>
             </div>
 
 
