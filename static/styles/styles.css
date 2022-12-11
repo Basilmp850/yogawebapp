@@ -17,7 +17,7 @@ html{
 
 .container{
     width:99.5%;
-    background-color: aqua;
+    background-color: rgb(177, 216, 216);
     margin-left:auto;
     margin-right:auto;
     display:grid;
@@ -43,7 +43,7 @@ nav{
     letter-spacing: 1.1px;
 }
 main{
-    background-color: red;
+    background-color: turquoise;
 }
 
 
@@ -53,7 +53,7 @@ aside{
 
 nav{
     grid-column: 1/span 2;
-    background-color: blue;
+    background-color: rgb(100, 100, 211);
 }
 footer{
     grid-column: 1/span 2;
@@ -176,7 +176,7 @@ aside p{
     gap: 20px;
     height:712px;
    
-    background-color: teal;
+    background-color: rgb(159, 233, 233);
 
     
 }
@@ -192,7 +192,36 @@ img{
 .uploadform{
   display:flex;
   flex-direction: column;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-bottom: 10px;
+  justify-content: space-evenly;
+  align-items: center;
+   margin-top:60px;
+   gap:30px;
+  
 }
+
+.containerofimage{
+
+    background-color:rgb(150, 230, 230);
+    
+}
+
+.file,.submit{
+
+    padding:10px;
+    border-radius:3px;
+    background-color: burlywood;
+
+}
+
+.file{
+    background-color:coral;
+}
+
+.stop,.click{
+    padding:12px;
+    background-color: bisque;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-top: 50px;
+}
+

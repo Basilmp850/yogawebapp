@@ -34,8 +34,8 @@
                 
                 
                 <form method="post" action="{{ url_for('tasks') }}">
-                    <input type="submit" value="Stop/Start" name="stop" />
-                    <input type="submit" value="Capture" name="click"/>
+                    <input type="submit" value="Stop/Start" name="stop" class="stop"/>
+                    <input type="submit" value="Capture" name="click" class="click"/>
                 </form>
                 <div class="imgcontainer">
                     <img src="{{ url_for('video_feed') }}">

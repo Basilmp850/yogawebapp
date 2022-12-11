@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="containerofimage">
         <nav>
             <div class="title">YOGA MENTOR</div>
            
@@ -31,14 +31,14 @@
         </nav> 
       
     <div class="uploadform">
-        <h1>Upload Image</h1>
-      <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
+        <h1>Upload Video</h1>
+       <form method=post enctype=multipart/form-data>
+      <input type=file name=file class="file">
+      <input type=submit value=Upload class="submit">
       </form>
-     <img src="{{ uploaded_image }}" class = "imgcontainer" >
+      <img src="{{ uploaded_image }}" class = "imgcontainer" >
 
-</div>
+     </div>
         <footer>
             <p>© 2022 | All Rights Reserved </p>
 
