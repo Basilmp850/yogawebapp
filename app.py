@@ -1,7 +1,4 @@
 from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort
-# from google_auth_oauthlib.flow import Flow
-# from pip._vendor import cachecontrol
-# from google.oauth2 import id_token
 from functools import wraps
 import google.auth.transport.requests
 
