@@ -21,11 +21,13 @@
     <div class="container">
         <nav>
             <div class="title">YOGA MENTOR</div>
+            <div class= "title">{{name}}</div>
            
             <div class="navbuttons">
-                <div class="home"><a href="{{ url_for('hello')}}">HOME</a></div>
+                <div class="home"><a href="{{ url_for('protected_area')}}">HOME</a></div>
                 <div class="aboutus"><a href="{{ url_for('aboutus') }}">ABOUT US</a></div>
                 <div class="contactus"><a href="{{ url_for('contactus') }}">CONTACT US</a></div>
+                <div class="logout"><a href="{{ url_for('logout') }}">LOG OUT</a></div>
             </div>
          
         </nav>
