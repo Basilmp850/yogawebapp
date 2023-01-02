@@ -7,6 +7,7 @@
 }
 
 .container{
+    box-shadow: 5px;
     display: flex;
     flex-direction: column;
     height: 60vh;
@@ -14,12 +15,18 @@
     /* background: gray; */
     margin: 10px;
     border-style:groove;
+    border-radius: 15px 50px 30px 5px;
+    border-width: 5px;
+    position:relative;
+    box-shadow: 5px;
+    
 }
 
 .formcontainer{
     display: flex;
     flex-direction: column;
     margin: 10px;
+    box-shadow: 10px;
     
 }
 .authentication{
@@ -39,20 +46,22 @@ background-color: black; /* Green */
   display: inline-block;
   font-size: 16px;
   margin: 10px;
+  border-radius: 10px;
 }
 .submit:hover{
     background-color: white;
     color: black;
-    border-style: dotted;
+    border-style:  groove;
     border-color: black;
 }
 #loginbutton{
-    margin: 40px  ;
+    margin-bottom: 30px  ;
+    margin-top: 60px;
     
 }
 
 #google-login{
-   background-color: gray; /* Green */
+   background-color: #D3D3D3; /* Green */
   border: none;
   color: black;
   padding: 15px 32px;
@@ -61,8 +70,23 @@ background-color: black; /* Green */
   display: inline-block;
   font-size: 16px;
   align-self: center;
+  border-radius: 20px;
+  /* margin-top:30px;   */
 }
 #google-login:hover{
     background-color: white;
-    color:gray;
+    color:black;
+    border-style: dashed;
+}
+.mail_field{
+    padding: 6px;
+    border-radius: 5px;
+}
+.password{
+    padding: 6px;
+    border-radius: 5px;
+}
+.confirm_password{
+    padding: 6px;
+    border-radius: 5px;
 }
