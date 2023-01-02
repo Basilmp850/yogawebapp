@@ -9,8 +9,8 @@ import requests
 from app import app
 
 
+
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"]="1" #possibly requires change in future
-GOOGLE_CLIENT_ID ="882580169177-1q5gcgjqv02cn4eqhpc5qsr0hvo4hu52.apps.googleusercontent.com"
 
 client_secrets_file=os.path.join(pathlib.Path(__file__).parent, "client_secret1.json")
 print(client_secrets_file)
@@ -52,7 +52,7 @@ def callback():
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token,
         request=token_request,
-        audience=GOOGLE_CLIENT_ID
+        audience=os.getenv("CLIENT_ID")
     )
     session['google_id']=id_info.get("sub")
     
