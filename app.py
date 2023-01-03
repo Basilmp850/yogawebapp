@@ -1,7 +1,4 @@
 from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort
-# from google_auth_oauthlib.flow import Flow
-# from pip._vendor import cachecontrol
-# from google.oauth2 import id_token
 from functools import wraps
 import google.auth.transport.requests
 
@@ -90,49 +87,6 @@ def start_page():
 def register():
     pass
 
-# @app.route("/login")
-# def login():
-#     authorization_url, state = google_authentication.flow.authorization_url()
-#     session["state"]=state
-#     return redirect(authorization_url)
-#     # print(session)
-#     # print(session["state"]+"- initial state")
-#     # print("[AUTHORIZATION URL]"+authorization_url)
-#     # print(state)
-
-#     #  session['google_id'] = "Test"
-#     # return redirect("/protected_area")
-
-# @app.route('/callback')
-# def callback():
-
-#     # print(session["state"])
-#     # print(request.args["state"]+" - request state")
-#     google_authentication.flow.fetch_token(authorization_response=request.url)
-#     #for security purposes. Fix this later.
-#     # if not (session["state"]==request.args["state"]):
-#     #   abort(500) # state does not match
-
-#     credentials = google_authentication.flow.credentials
-#     request_session = requests.session()
-#     cached_session = google_authentication.cachecontrol.CacheControl(request_session)
-#     token_request = google.auth.transport.requests.Request(session=cached_session)
-
-#     id_info = google_authentication.id_token.verify_oauth2_token(
-#         id_token=credentials._id_token,
-#         request=token_request,
-#         audience=google_authentication.GOOGLE_CLIENT_ID
-#     )
-#     session['google_id']=id_info.get("sub")
-    
-#     session["name"]=id_info.get("name")
-#     return redirect("/protected_area")
-    # return id_info
-    # return "hi"
-
-
-
-    
 @app.route("/protected_area")
 @login_required
 def protected_area():
