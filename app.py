@@ -28,7 +28,7 @@ def login_required(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
         if "google_id" not in session:
-            return abort(401) #Authorization needed
+            return redirect(url_for('start_page')) #Authorization needed
         else: 
             return function()
         
