@@ -10,6 +10,8 @@ import datetime,time
 import numpy as np
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
+import yogaposturedetection as ygp
+
 
 
 allowed_formats = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -31,7 +33,7 @@ def login_required(function):
         
     return wrapper
 
-app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploadedimages')
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploadedimage/chair')
 
 global capture, switch, out 
 capture=0
@@ -133,13 +135,14 @@ def preventionchronic():
 @app.route('/detection', methods = ['POST','GET'])
 def detection():
     full_filename = ""
+    y_pred_lab=""
     if request.method == 'POST':
-        for file in os.listdir('static/uploadedimages'):
-          os.remove('static/uploadedimages/' + file)
+        for file in os.listdir('static/uploadedimage/chair/'):
+          os.remove('static/uploadedimage/chair/' + file)
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file']
+        file = request.files['file'] 
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
@@ -147,7 +150,25 @@ def detection():
             filename = secure_filename(file.filename)
             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    return render_template('Mainpages/detection.html', uploaded_image = full_filename)
+            #processing
+            csvs_out_test_path = 'uploaded_image.csv'
+            IMAGES_ROOT = "static"
+            images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
+            images_out_test_folder = 'uploadedimage_output'
+            csvs_out_test_path = 'uploaded_image.csv'
+            preprocessor = ygp.MoveNetPreprocessor(
+            images_in_folder=images_in_test_folder,
+            images_out_folder=images_out_test_folder,
+             csvs_out_path=csvs_out_test_path,
+            )
+            preprocessor.process(per_pose_class_limit=None)
+            X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+            y_pred = ygp.model.predict(X_test)
+            y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+            y_pred_lab = y_pred_label[0]
+            
+
+    return render_template('Mainpages/detection.html', uploaded_image = full_filename, pose_prediction=y_pred_lab)
 
 
 @app.route('/requests',methods=['POST','GET'])
