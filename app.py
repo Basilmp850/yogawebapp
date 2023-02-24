@@ -56,6 +56,7 @@ def gen_frames():  # generate frame by frame from camera
         if success:
             for file in os.listdir('static/uploadedimage/chair'):
              os.remove('static/uploadedimage/chair/' + file)
+            cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
             csvs_out_test_path = 'uploaded_image.csv'
             IMAGES_ROOT = "static"
             images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
@@ -84,7 +85,7 @@ def gen_frames():  # generate frame by frame from camera
                  )
                  
             cv2.flip(frame,1)
-            cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+
             if(capture):
                 capture=0
                 now = datetime.datetime.now()
