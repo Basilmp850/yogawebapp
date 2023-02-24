@@ -7,7 +7,7 @@ import sys
 pose_sample_rpi_path = os.path.join(os.getcwd(), 'examples/lite/examples/pose_estimation/raspberry_pi')
 sys.path.append(pose_sample_rpi_path)
 import utils
-from  data import BodyPart
+from  data import BodyPart  
 import tempfile
 import csv
 import tqdm
@@ -182,16 +182,18 @@ class MoveNetPreprocessor(object):
           csv_out_writer.writerow([image_name] + coordinates)
 
         if not valid_image_count:
-          raise RuntimeError(
-              'No valid images found for the "{}" class.'
-              .format(pose_class_name))
+          print("No valid poses found!!")
+          # raise RuntimeError(
+          #     'No valid images found for the "{}" class.'
+          #     .format(pose_class_name))
 
     # Print the error message collected during preprocessing.
     print('\n'.join(self._messages))
 
     # Combine all per-class CSVs into a single output file
-    all_landmarks_df = self._all_landmarks_as_dataframe()
-    all_landmarks_df.to_csv(self._csvs_out_path, index=False)
+    if valid_image_count:
+     all_landmarks_df = self._all_landmarks_as_dataframe()
+     all_landmarks_df.to_csv(self._csvs_out_path, index=False)
 
   def class_names(self):
     """List of classes found in the training dataset."""
