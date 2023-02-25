@@ -270,7 +270,7 @@ def draw_prediction_on_image(
   return image_np
 
 
-csvs_out_test_path = 'uploaded_image.csv'
+csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
 # IMAGES_ROOT = "static"
 # images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
 # images_out_test_folder = 'uploadedimage_output'
@@ -318,7 +318,8 @@ def load_pose_landmarks(csv_path):
 # Split training data (X, y) into (X_train, y_train) and (X_val, y_val)
 # X_train, X_val, y_train, y_val = train_test_split(X, y,
                                                   # test_size=0.15)
-X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
+if len(os.listdir('static/image_csv'))!=0:
+ X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
 def get_center_point(landmarks, left_bodypart, right_bodypart):
   """Calculates the center point of the two given landmarks."""
 
@@ -415,10 +416,11 @@ earlystopping = keras.callbacks.EarlyStopping(monitor='val_accuracy',
 # Start training
 
 # Classify pose in the TEST dataset using the trained model
-y_pred = model.predict(X_test)
+if len(os.listdir('static/image_csv'))!=0:
+ y_pred = model.predict(X_test)
 
 # Convert the prediction result to class name
-y_pred_label = [class_names[i] for i in np.argmax(y_pred, axis=1)]
+ y_pred_label = [class_names[i] for i in np.argmax(y_pred, axis=1)]
 # y_true_label = [class_names[i] for i in np.argmax(y_test, axis=1)]
 
-print(y_pred_label[0])
+# print(y_pred_label[0])

@@ -48,35 +48,40 @@ def allowed_file(filename):
 def gen_frames():  # generate frame by frame from camera
     global out, capture
     image_loc = 'static/uploadedimage/chair'
-    y_pred_lab=""
-    print("prediction beforehand: "+y_pred_lab)
+    
+    # print("prediction beforehand: "+y_pred_lab)
     while True:
         success, frame = camera.read() 
         print(success)
+        y_pred_lab=""
         if success:
             for file in os.listdir('static/uploadedimage/chair'):
              os.remove('static/uploadedimage/chair/' + file)
+            
             cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
-            csvs_out_test_path = 'uploaded_image.csv'
+            # csvs_out_test_path = 'uploaded_image.csv'
+            for file in os.listdir('static/image_csv'):
+             os.remove('static/image_csv/' + file)
             IMAGES_ROOT = "static"
             images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
             images_out_test_folder = 'uploadedimage_output'
-            csvs_out_test_path = 'uploaded_image.csv'
+            csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
             preprocessor = ygp.MoveNetPreprocessor(
             images_in_folder=images_in_test_folder,
             images_out_folder=images_out_test_folder,
              csvs_out_path=csvs_out_test_path,
             )
             preprocessor.process(per_pose_class_limit=None)
-            X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
-            y_pred = ygp.model.predict(X_test)
-            y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
-            y_pred_lab = y_pred_label[0]
-            print(y_pred_lab)
+            if len(os.listdir('static/image_csv'))!=0:
+             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+             y_pred = ygp.model.predict(X_test)
+             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_lab = y_pred_label[0]
+             print(y_pred_lab)
            
             cv2.putText(
                  img = frame,
-                 text = y_pred_lab if not y_pred_label=="" else "No Pose Detected!!",
+                 text = y_pred_lab if not y_pred_lab=="" else "No Pose Detected!!",
                  org = (200, 200),
                  fontFace = cv2.FONT_HERSHEY_DUPLEX,
                  fontScale = 1.0,
@@ -102,7 +107,7 @@ def gen_frames():  # generate frame by frame from camera
                 pass
                 
         else:
-            pass
+            break
 
 
 
@@ -144,6 +149,8 @@ def contactus():
 def video_feed():
     if(switch):
      return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    else: 
+        return "No response"
 
 
 @app.route('/capturepose')
@@ -187,11 +194,11 @@ def detection():
             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             #processing
-            csvs_out_test_path = 'uploaded_image.csv'
+            # csvs_out_test_path = 'uploaded_image.csv'
             IMAGES_ROOT = "static"
             images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
             images_out_test_folder = 'uploadedimage_output'
-            csvs_out_test_path = 'uploaded_image.csv'
+            csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
             preprocessor = ygp.MoveNetPreprocessor(
             images_in_folder=images_in_test_folder,
             images_out_folder=images_out_test_folder,
