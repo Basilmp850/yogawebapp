@@ -1,51 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <!-- {% block head %} -->
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>yoga mentor</title>
-    <!-- {% block styles %} -->
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles.css') }}">
-    <!-- {% endblock %} -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-        <!-- {% endblock %} -->
-</head>
-
-<body>
-    <div class="containerofimage">
-        <nav>
-            <div class="title">YOGA MENTOR</div>
-           
-            <div class="navbuttons">
-                <div class="home"><a href="{{ url_for('hello')}}">HOME</a></div>
-                <div class="aboutus"><a href="{{ url_for('aboutus') }}">ABOUT US</a></div>
-                <div class="contactus"><a href="{{ url_for('contactus') }}">CONTACT US</a></div>
-            </div>
-         
-        </nav> 
-      
-    <div class="uploadform">
-        <h1>Upload Video</h1>
-       <form method=post enctype=multipart/form-data>
-      <input type=file name=file class="file">
-      <input type=submit value=Upload class="submit">
-      </form>
-      <img src="{{ uploaded_image }}" class = "imgcontainer" >
-      <h1>Yoga Pose detected : {{pose_prediction}}</h1>
-     </div>
-        <footer>
-            <p>© 2022 | All Rights Reserved </p>
-
-
-        </footer>
-    </div>
-
-</body>
-
-</html>
+{% block content %}
+<div class="uploadform">
+    <h1>Upload Image</h1>
+   <form method=post enctype=multipart/form-data>
+  <input type=file name=file class="file">
+  <input type=submit value=Upload class="submit">
+  </form>
+  <img src="{{ uploaded_image }}" class = "imgcontainer" >
+  {% if pose_prediction : %}
+  <h1>Yoga Pose detected : {{pose_prediction}}</h1>
+  {% endif %}
+ </div>
+ <!-- <div class="uploadform">
+    <h1>Upload video</h1>
+    <form action="/uploadvideo" method=post enctype=multipart/form-data>
+   <input type=file name=file class="file">
+   <input type=submit value=Upload class="submit">
+   </form>
+ </div> -->
+{% endblock %}

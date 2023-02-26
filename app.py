@@ -10,7 +10,7 @@ import datetime,time
 import numpy as np
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
-import yogaposturedetection as ygp
+import custom_modules.yogaposturedetection as ygp
 
 
 
@@ -19,7 +19,7 @@ y_pred_label=""
 app = Flask(__name__)
 #routes
 from user_auth import routes
-import google_authentication
+import custom_modules.google_authentication as google_authentication
 
 app.secret_key = "JonOnFire"
 
@@ -213,6 +213,21 @@ def detection():
 
     return render_template('Mainpages/detection.html', uploaded_image = full_filename, pose_prediction=y_pred_lab)
 
+@app.route('/detection/uploadvideo',methods=['POST'])
+def upload_video():
+	if 'file' not in request.files:
+		flash('No file part')
+		return redirect(request.url)
+	file = request.files['file']
+	if file.filename == '':
+		flash('No image selected for uploading')
+		return redirect(request.url)
+	else:
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		#print('upload_video filename: ' + filename)
+		flash('Video successfully uploaded and displayed below')
+		return render_template('detection.html', filename=filename)
 
 @app.route('/requests',methods=['POST','GET'])
 def tasks():
