@@ -1,4 +1,4 @@
-from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort
+from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort,jsonify
 from functools import wraps
 import google.auth.transport.requests
 
@@ -20,7 +20,7 @@ app = Flask(__name__)
 #routes
 from user_auth import routes
 import custom_modules.google_authentication as google_authentication
-
+import custom_modules.diseaseprediction as diseasepredictor
 app.secret_key = "JonOnFire"
 
 def login_required(function): 
@@ -117,8 +117,6 @@ def hello():
     # print(session["state"])
     return render_template('index.html')
 
-
-
 @app.route("/")
 def start_page():
     # return "Hello there<a href='/login'><button>Login</button></a>"
@@ -158,8 +156,6 @@ def video_feed():
 def capture_pose():
     return render_template('Mainpages/capturepose.html')
 
-
-
 @app.route('/chronic')
 @login_required
 def chronic():
@@ -168,12 +164,12 @@ def chronic():
 @app.route('/benefits')
 @login_required
 def benefits():
-    pass
+    return render_template('Mainpages/benefits.html')
 
 @app.route('/preventionchronic')
 @login_required
 def preventionchronic():
-    pass
+    return render_template('Mainpages/preventionchronic.html')
 
 @app.route('/detection', methods = ['POST','GET'])
 def detection():
@@ -228,6 +224,8 @@ def upload_video():
 		#print('upload_video filename: ' + filename)
 		flash('Video successfully uploaded and displayed below')
 		return render_template('detection.html', filename=filename)
+
+
 
 @app.route('/requests',methods=['POST','GET'])
 def tasks():
