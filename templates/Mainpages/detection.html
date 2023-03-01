@@ -31,20 +31,22 @@
         </nav> 
       
     <div class="uploadform">
-        <h1>Upload Video</h1>
-       <form method=post enctype=multipart/form-data>
+        <h1>Upload Image</h1>
+       <form method=post enctype=multipart/form-data> 
       <input type=file name=file class="file">
       <input type=submit value=Upload class="submit">
       </form>
-      <img src="{{ uploaded_image }}" class = "imgcontainer" >
+      
+      
+      <button class="detectposebutton" id = "{{uploaded_image[0]['idname']}}" >Detect Yoga Pose</button>
+      <img src="{{ uploaded_image[0]['full_filename'] }}" class = "imgcontainer" >
 
      </div>
         <footer>
             <p>© 2022 | All Rights Reserved </p>
-
-
         </footer>
     </div>
+    <script src="../../static/scripts/scripts.js"></script>
 
 </body>
 

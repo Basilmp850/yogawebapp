@@ -10,11 +10,17 @@ allowed_formats = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploadedimages')
-
+symptoms = [
+    {
+        "full_filename" : "",
+        "idname" : "",
+        
+    }
+]
 global capture, switch, out 
 capture=0
 switch=1
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(-1)
 
 
 def allowed_file(filename):
@@ -83,7 +89,7 @@ def preventionchronic():
     pass
 
 @app.route('/detection', methods = ['POST','GET'])
-def detection():
+def det():
     full_filename = ""
     if request.method == 'POST':
         for file in os.listdir('static/uploadedimages'):
@@ -99,7 +105,14 @@ def detection():
             filename = secure_filename(file.filename)
             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    return render_template('Mainpages/detection.html', uploaded_image = full_filename)
+            print(full_filename)
+            symptoms[0]["full_filename"] = full_filename;
+            symptoms[0]["idname"] = "detectbutton"
+    return render_template('Mainpages/detection.html', uploaded_image = symptoms)
+
+# @app.route('/det',methods=['POST','GET'])
+# def det():
+#     pass
 
 
 @app.route('/requests',methods=['POST','GET'])
@@ -115,7 +128,7 @@ def tasks():
                 camera.release()
                 cv2.destroyAllWindows()
             else:
-                camera = cv2.VideoCapture(0)
+                camera = cv2.VideoCapture(-1)
                 switch=1       
     elif request.method=='GET':
         return render_template('Mainpages/capturepose.html')
