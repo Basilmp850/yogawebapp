@@ -225,3 +225,11 @@ img{
     margin-top: 50px;
 }
 
+.detectposebutton{
+    opacity: 0;
+}
+
+#detectbutton{
+    opacity: 1;
+}
+

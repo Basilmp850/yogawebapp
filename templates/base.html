@@ -17,14 +17,17 @@
         {% endblock %}
 </head>
 <body>
+    {% block bodycontent %}
+    
     {% block navbar %}
     <nav>
         <div class="title">YOGA MENTOR</div>
-
+        <!-- {% block navitems %} {% endblock %} -->
         <div class="navbuttons">
             <div class="home"><a href="{{ url_for('hello')}}">HOME</a></div>
             <div class="aboutus"><a href="{{ url_for('aboutus') }}">ABOUT US</a></div>
             <div class="contactus"><a href="{{ url_for('contactus') }}">CONTACT US</a></div>
+            <div class="logout"><a href="{{ url_for('logout') }}">LOG OUT</a></div>
         </div>
      
     </nav>
@@ -37,7 +40,7 @@
         {% endblock %}
 
     </footer>
-
+    {% endblock %}
 </body>
 </html>
     

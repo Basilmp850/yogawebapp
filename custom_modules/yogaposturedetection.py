@@ -130,7 +130,7 @@ class MoveNetPreprocessor(object):
         valid_image_count = 0
 
         # Detect pose landmarks from each image
-        for image_name in tqdm.tqdm(image_names):
+        for image_name in image_names:
           image_path = os.path.join(images_in_folder, image_name)
 
           try:
@@ -163,13 +163,13 @@ class MoveNetPreprocessor(object):
           valid_image_count += 1
 
           # Draw the prediction result on top of the image for debugging later
-          output_overlay = draw_prediction_on_image(
-              image.numpy().astype(np.uint8), person, 
-              close_figure=True, keep_input_size=True)
+          # output_overlay = draw_prediction_on_image(
+          #     image.numpy().astype(np.uint8), person, 
+          #     close_figure=True, keep_input_size=True)
 
-          # Write detection result into an image file
-          output_frame = cv2.cvtColor(output_overlay, cv2.COLOR_RGB2BGR)
-          cv2.imwrite(os.path.join(images_out_folder, image_name), output_frame)
+          # # Write detection result into an image file
+          # output_frame = cv2.cvtColor(output_overlay, cv2.COLOR_RGB2BGR)
+          # cv2.imwrite(os.path.join(images_out_folder, image_name), output_frame)
 
           # Get landmarks and scale it to the same size as the input image
           pose_landmarks = np.array(
@@ -188,7 +188,7 @@ class MoveNetPreprocessor(object):
           #     .format(pose_class_name))
 
     # Print the error message collected during preprocessing.
-    print('\n'.join(self._messages))
+    # print('\n'.join(self._messages))
 
     # Combine all per-class CSVs into a single output file
     if valid_image_count:
@@ -236,38 +236,38 @@ class MoveNetPreprocessor(object):
     return total_df
 
 
-def draw_prediction_on_image(
-    image, person, crop_region=None, close_figure=True,
-    keep_input_size=False):
-  """Draws the keypoint predictions on image.
+# def draw_prediction_on_image(
+#     image, person, crop_region=None, close_figure=True,
+#     keep_input_size=False):
+#   """Draws the keypoint predictions on image.
 
-  Args:
-    image: An numpy array with shape [height, width, channel] representing the
-      pixel values of the input image.
-    person: A person entity returned from the MoveNet.SinglePose model.
-    close_figure: Whether to close the plt figure after the function returns.
-    keep_input_size: Whether to keep the size of the input image.
+#   Args:
+#     image: An numpy array with shape [height, width, channel] representing the
+#       pixel values of the input image.
+#     person: A person entity returned from the MoveNet.SinglePose model.
+#     close_figure: Whether to close the plt figure after the function returns.
+#     keep_input_size: Whether to keep the size of the input image.
 
-  Returns:
-    An numpy array with shape [out_height, out_width, channel] representing the
-    image overlaid with keypoint predictions.
-  """
-  # Draw the detection result on top of the image.
-  image_np = utils.visualize(image, [person])
+#   Returns:
+#     An numpy array with shape [out_height, out_width, channel] representing the
+#     image overlaid with keypoint predictions.
+#   """
+#   # Draw the detection result on top of the image.
+#   image_np = utils.visualize(image, [person])
 
-  # Plot the image with detection results.
-  height, width, channel = image.shape
-  aspect_ratio = float(width) / height
-  fig, ax = plt.subplots(figsize=(12 * aspect_ratio, 12))
-  im = ax.imshow(image_np)
+#   # Plot the image with detection results.
+#   height, width, channel = image.shape
+#   aspect_ratio = float(width) / height
+#   fig, ax = plt.subplots(figsize=(12 * aspect_ratio, 12))
+#   im = ax.imshow(image_np)
 
-  if close_figure:
-    plt.close(fig)
+#   if close_figure:
+#     plt.close(fig)
 
-  if not keep_input_size:
-    image_np = utils.keep_aspect_ratio_resizer(image_np, (512, 512))
+#   if not keep_input_size:
+#     image_np = utils.keep_aspect_ratio_resizer(image_np, (512, 512))
 
-  return image_np
+#   return image_np
 
 
 csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
@@ -368,39 +368,39 @@ def get_pose_size(landmarks, torso_size_multiplier=2.5):
   return pose_size
 
 
-def normalize_pose_landmarks(landmarks):
-  """Normalizes the landmarks translation by moving the pose center to (0,0) and
-  scaling it to a constant pose size.
-  """
-  # Move landmarks so that the pose center becomes (0,0)
-  pose_center = get_center_point(landmarks, BodyPart.LEFT_HIP, 
-                                 BodyPart.RIGHT_HIP)
-  pose_center = tf.expand_dims(pose_center, axis=1)
-  # Broadcast the pose center to the same size as the landmark vector to perform
-  # substraction
-  pose_center = tf.broadcast_to(pose_center, 
-                                [tf.size(landmarks) // (17*2), 17, 2])
-  landmarks = landmarks - pose_center
+# def normalize_pose_landmarks(landmarks):
+#   """Normalizes the landmarks translation by moving the pose center to (0,0) and
+#   scaling it to a constant pose size.
+#   """
+#   # Move landmarks so that the pose center becomes (0,0)
+#   pose_center = get_center_point(landmarks, BodyPart.LEFT_HIP, 
+#                                  BodyPart.RIGHT_HIP)
+#   pose_center = tf.expand_dims(pose_center, axis=1)
+#   # Broadcast the pose center to the same size as the landmark vector to perform
+#   # substraction
+#   pose_center = tf.broadcast_to(pose_center, 
+#                                 [tf.size(landmarks) // (17*2), 17, 2])
+#   landmarks = landmarks - pose_center
 
-  # Scale the landmarks to a constant pose size
-  pose_size = get_pose_size(landmarks)
-  landmarks /= pose_size
+#   # Scale the landmarks to a constant pose size
+#   pose_size = get_pose_size(landmarks)
+#   landmarks /= pose_size
 
-  return landmarks
+#   return landmarks
 
 
-def landmarks_to_embedding(landmarks_and_scores):
-  """Converts the input landmarks into a pose embedding."""
-  # Reshape the flat input into a matrix with shape=(17, 3)
-  reshaped_inputs = keras.layers.Reshape((17, 3))(landmarks_and_scores)
+# def landmarks_to_embedding(landmarks_and_scores):
+#   """Converts the input landmarks into a pose embedding."""
+#   # Reshape the flat input into a matrix with shape=(17, 3)
+#   reshaped_inputs = keras.layers.Reshape((17, 3))(landmarks_and_scores)
 
-  # Normalize landmarks 2D
-  landmarks = normalize_pose_landmarks(reshaped_inputs[:, :, :2])
+#   # Normalize landmarks 2D
+#   landmarks = normalize_pose_landmarks(reshaped_inputs[:, :, :2])
 
-  # Flatten the normalized landmark coordinates into a vector
-  embedding = keras.layers.Flatten()(landmarks)
+#   # Flatten the normalized landmark coordinates into a vector
+#   embedding = keras.layers.Flatten()(landmarks)
 
-  return embedding
+#   return embedding
 
 # Add a checkpoint callback to store the checkpoint that has the highest
 # validation accuracy.

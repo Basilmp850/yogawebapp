@@ -35,11 +35,22 @@ def login_required(function):
 
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploadedimage/chair')
 
+file_details = [
+    {
+        "full_filename" : "",
+        "idname" : "",
+        
+    }
+]
+
 global capture, switch, out 
 capture=0
 switch=1
-camera = cv2.VideoCapture(0)
-
+camera = cv2.VideoCapture('posefind.mp4')
+frame_width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+video = cv2.VideoWriter('processed_video.avi', cv2.VideoWriter_fourcc(*'X264'),
+                        25, (frame_width, frame_height))
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -48,10 +59,30 @@ def allowed_file(filename):
 def gen_frames():  # generate frame by frame from camera
     global out, capture
     image_loc = 'static/uploadedimage/chair'
-    
+    previous_closest_label=""
+    i=0
     # print("prediction beforehand: "+y_pred_lab)
     while True:
         success, frame = camera.read() 
+        if i%60:
+            cv2.putText(
+                 img = frame,
+                 text = previous_closest_label if not previous_closest_label=="" else "No Pose Detected!!",
+                 org = (200, 200),
+                 fontFace = cv2.FONT_HERSHEY_DUPLEX,
+                 fontScale = 1.0,
+                 color = (125, 246, 55),
+                 thickness = 3
+                 )
+            try:
+                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            except Exception as e:
+                pass
+            i=i+1
+            continue
         print(success)
         y_pred_lab=""
         if success:
@@ -88,9 +119,9 @@ def gen_frames():  # generate frame by frame from camera
                  color = (125, 246, 55),
                  thickness = 3
                  )
-                 
-            cv2.flip(frame,1)
-
+            previous_closest_label=y_pred_lab
+            # cv2.flip(frame,1)
+            # video.write(frame)
             if(capture):
                 capture=0
                 now = datetime.datetime.now()
@@ -105,44 +136,44 @@ def gen_frames():  # generate frame by frame from camera
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
             except Exception as e:
                 pass
-                
+            i=i+1
         else:
             break
 
 
 
-@app.route('/home')
+@app.route('/home/')
 @login_required
 def hello():
     # print(session["state"])
-    return render_template('index.html')
+    return render_template('index.html',name=session["name"])
 
 @app.route("/")
 def start_page():
     # return "Hello there<a href='/login'><button>Login</button></a>"
     return render_template('User/signup.html')
     
-@app.route('/register')
+@app.route('/register/')
 def register():
     pass
 
-@app.route("/protected_area")
+@app.route("/protected_area/")
 @login_required
 def protected_area():
     # return f"Hello {session['name']}! <br/><a href='/logout'><button>Logout</button></a>"
     return render_template('index.html',name = session["name"])
 
-@app.route('/aboutus')
+@app.route('/aboutus/')
 @login_required
 def aboutus():
     return render_template('Basic_layouts/aboutus.html')
 
-@app.route('/contactus')
+@app.route('/contactus/')
 @login_required
 def contactus():
     return render_template('Basic_layouts/contactus.html')
 
-@app.route('/video_feed')
+@app.route('/video_feed/')
 @login_required
 def video_feed():
     if(switch):
@@ -151,27 +182,27 @@ def video_feed():
         return "No response"
 
 
-@app.route('/capturepose')
+@app.route('/capturepose/')
 @login_required
 def capture_pose():
     return render_template('Mainpages/capturepose.html')
 
-@app.route('/chronic')
+@app.route('/chronic/')
 @login_required
 def chronic():
     return render_template('Mainpages/chronic.html')
 
-@app.route('/benefits')
+@app.route('/benefits/')
 @login_required
 def benefits():
     return render_template('Mainpages/benefits.html')
 
-@app.route('/preventionchronic')
+@app.route('/preventionchronic/')
 @login_required
 def preventionchronic():
     return render_template('Mainpages/preventionchronic.html')
 
-@app.route('/detection', methods = ['POST','GET'])
+@app.route('/detection/', methods = ['POST','GET'])
 def detection():
     full_filename = ""
     y_pred_lab=""
@@ -205,9 +236,12 @@ def detection():
             y_pred = ygp.model.predict(X_test)
             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
             y_pred_lab = y_pred_label[0]
+            print(full_filename)
+            file_details[0]["full_filename"] = full_filename
+            file_details[0]["idname"] = "detectbutton"
             
 
-    return render_template('Mainpages/detection.html', uploaded_image = full_filename, pose_prediction=y_pred_lab)
+    return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab)
 
 @app.route('/detection/uploadvideo',methods=['POST'])
 def upload_video():
@@ -227,7 +261,7 @@ def upload_video():
 
 
 
-@app.route('/requests',methods=['POST','GET'])
+@app.route('/requests/',methods=['POST','GET'])
 def tasks():
     global switch,camera
     if request.method == 'POST':
