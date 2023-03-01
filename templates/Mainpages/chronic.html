@@ -1,39 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <!-- {% block head %} -->
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>yoga mentor</title>
-    <!-- {% block styles %} -->
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/styles.css') }}">
-    <!-- {% endblock %} -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-        <!-- {% endblock %} -->
-</head>
-<body>
-    <nav>
-        <div class="title">YOGA MENTOR</div>
-       
-        <div class="navbuttons">
-            <div class="home"><a href="{{ url_for('hello')}}">HOME</a></div>
-            <div class="aboutus"><a href="{{ url_for('aboutus') }}">ABOUT US</a></div>
-            <div class="contactus"><a href="{{ url_for('contactus') }}">CONTACT US</a></div>
-        </div>
-     
-    </nav>
-   
-    <footer>
-        <p>© 2022 | All Rights Reserved </p>
+{% extends "base.html" %}
 
 
-    </footer>
-
-</body>
-</html>
+{% block content %}
+<h1>Select Symptoms</h1>
+<label for="1">Symptom 1 : </label>
+<input type="text"  list="symptoms1" name="1">
+<datalist id="symptoms1" class="symptoms">
     
+</datalist>
+<label for="2">Symptom 2 : </label>
+<input type="text"  list="symptoms2" name="2">
+<datalist id="symptoms2" class="symptoms">
+    
+</datalist>
+<label for="3">Symptom 3 : </label>
+<input type="text" list="symptoms3" name="3">
+<datalist id="symptoms3" class="symptoms">
+    
+</datalist>
+    <button name ="submit">Submit</button>
+<div id="disease_prediction">
+       
+</div>
+<button class="showrecommendation">See recommendation</button>
+<ul id="yoga_recommendation_list"></ul>
+<script>
+    // var up = document.getElementById('symptoms');
+    var down = document.getElementById('gfg');
+    // var select1 = document.getElementById("symptom1");
+    // var select2 = document.getElementById('symptom2')
+    var select = document.getElementsByClassName('symptoms')
+    var elmts =['Abdominal Pain', 'Abnormal Menstruation', 'Acidity', 'Acute Liver Failure', 'Altered Sensorium', 'Anxiety', 'Back Pain', 
+    'Belly Pain', 'Blackheads', 'Bladder Discomfort', 'Blister', 'Blood In Sputum', 'Bloody Stool', 
+    'Blurred And Distorted Vision', 'Breathlessness', 'Brittle Nails', 'Bruising', 'Burning Micturition', 'Chest Pain', 
+    'Chills', 'Cold Hands And Feets', 'Coma', 'Congestion', 'Constipation', 'Continuous Feel Of Urine', 'Continuous Sneezing', 
+    'Cough', 'Cramps', 'Dark Urine', 'Dehydration', 'Depression', 'Diarrhoea', 'Dischromic  Patches', 'Distention Of Abdomen',
+     'Dizziness', 'Drying And Tingling Lips', 'Enlarged Thyroid', 'Excessive Hunger', 'Extra Marital Contacts', 
+     'Family History', 'Fast Heart Rate', 'Fatigue', 'Fluid Overload', 'Fluid Overload.1', 'Foul Smell Of urine',
+      'Headache', 'High Fever', 'Hip Joint Pain', 'History Of Alcohol Consumption', 'Increased Appetite', 'Indigestion', 
+      'Inflammatory Nails', 'Internal Itching', 'Irregular Sugar Level', 'Irritability', 'Irritation In Anus', 'Itching',
+       'Joint Pain', 'Knee Pain', 'Lack Of Concentration', 'Lethargy', 'Loss Of Appetite', 'Loss Of Balance', 'Loss Of Smell',
+        'Malaise', 'Mild Fever', 'Mood Swings', 'Movement Stiffness', 'Mucoid Sputum', 'Muscle Pain', 'Muscle Wasting',
+         'Muscle Weakness', 'Nausea', 'Neck Pain', 'Nodal Skin Eruptions', 'Obesity', 'Pain Behind The Eyes', 
+         'Pain During Bowel Movements', 'Pain In Anal Region', 'Painful Walking', 'Palpitations', 'Passage Of Gases', 
+         'Patches In Throat', 'Phlegm', 'Polyuria', 'Prominent Veins On Calf', 'Puffy Face And Eyes', 'Pus Filled Pimples', 
+         'Receiving Blood Transfusion', 'Receiving Unsterile Injections', 'Red Sore Around Nose', 'Red Spots Over Body', 
+         'Redness Of Eyes', 'Restlessness', 'Runny Nose', 'Rusty Sputum', 'Scurring', 'Shivering', 'Silver Like Dusting', 
+         'Sinus Pressure', 'Skin Peeling', 'Skin Rash', 'Slurred Speech', 'Small Dents In Nails', 'Spinning Movements', 
+         'Spotting  urination', 'Stiff Neck', 'Stomach Bleeding', 'Stomach Pain', 'Sunken Eyes', 'Sweating', 
+         'Swelled Lymph Nodes', 'Swelling Joints', 'Swelling Of Stomach', 'Swollen Blood Vessels', 'Swollen Extremeties', 
+         'Swollen Legs', 'Throat Irritation', 'Toxic Look (typhos)', 'Ulcers On Tongue', 'Unsteadiness', 'Visual Disturbances', 
+         'Vomiting', 'Watering From Eyes', 'Weakness In Limbs', 'Weakness Of One Body Side', 'Weight Gain', 'Weight Loss', 
+         'Yellow Crust Ooze', 'Yellow Urine', 'Yellowing Of Eyes', 'Yellowish Skin'];
+    // Main function
+        for (var i = 0; i < elmts.length; i++) {
+            var optn = elmts[i];
+            for(var j = 0; j<select.length; j++){
+                var e = document.createElement("option");
+                e.textContent = optn;
+                select[j].appendChild(e);
+            }
+        
+        }
+    
+
+</script>
+<script src="{{url_for('static', filename='js/diseasepredictionscript.js')}}"></script>
+{% endblock %}
