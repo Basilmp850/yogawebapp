@@ -95,7 +95,7 @@ class MoveNetPreprocessor(object):
         [n for n in os.listdir(self._images_in_folder) if not n.startswith('.')]
         )
 
-  def process(self, per_pose_class_limit=None, detection_threshold=0.1):
+  def process(self, per_pose_class_limit=None, detection_threshold=0.17):
     """Preprocesses images in the given folder.
     Args:
       per_pose_class_limit: Number of images to load. As preprocessing usually

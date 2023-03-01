@@ -64,7 +64,7 @@ def gen_frames():  # generate frame by frame from camera
     # print("prediction beforehand: "+y_pred_lab)
     while True:
         success, frame = camera.read() 
-        if i%60:
+        if i%30:
             cv2.putText(
                  img = frame,
                  text = previous_closest_label if not previous_closest_label=="" else "No Pose Detected!!",
@@ -75,7 +75,7 @@ def gen_frames():  # generate frame by frame from camera
                  thickness = 3
                  )
             try:
-                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
+                ret, buffer = cv2.imencode('.jpg', frame)
                 frame = buffer.tobytes()
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -130,7 +130,7 @@ def gen_frames():  # generate frame by frame from camera
                 cv2.imwrite(p, frame)
       
             try:
-                ret, buffer = cv2.imencode('.jpg', cv2.flip(frame,1))
+                ret, buffer = cv2.imencode('.jpg', frame)
                 frame = buffer.tobytes()
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')

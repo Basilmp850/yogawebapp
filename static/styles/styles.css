@@ -233,3 +233,11 @@ img{
     opacity: 1;
 }
 
+.showrecommendation{
+    display: none;
+}
+
+#showrec{
+    display: block;
+}
+

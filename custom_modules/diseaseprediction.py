@@ -22,6 +22,7 @@ final_svm_model = pickle.load(open('./pickled_files/svm_model.pkl', 'rb'))
 final_rf_model =  pickle.load(open('./pickled_files/rf_model.pkl', 'rb'))
 final_nb_model = pickle.load(open('./pickled_files/nb_model.pkl', 'rb'))
 encoder = pickle.load(open('./pickled_files/encoder.pkl', 'rb')) 
+yogarecommendation = pickle.load(open('./pickled_files/yogarecommendationdictionary.pkl','rb'))
 
 #testing
 # encoder = LabelEncoder()
@@ -85,7 +86,10 @@ def chronicpost():
      term1 = (requestdata['symptom1']) if len(requestdata['symptom1'])!=0 else ''
      prediction_attributes+=term1
      for i in range(2,4,1):
-      term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+      if term1=='' and i==2:
+           term = (requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+      else: 
+       term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
       prediction_attributes+=term
 
      prediction = predictDisease(prediction_attributes)["final_prediction"]
@@ -93,7 +97,8 @@ def chronicpost():
         "symptom1" : requestdata['symptom1'],
         "symptom2" : requestdata['symptom2'],
         "symptom3" : requestdata['symptom3'],
-        "prediction" : prediction   
+        "prediction" : prediction,
+        "yoga_recommendation" : yogarecommendation[prediction]
      }
 
      return jsonify(symptoms)

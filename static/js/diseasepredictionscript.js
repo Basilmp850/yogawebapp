@@ -9,7 +9,7 @@
 // });
 
 // document.getElementById("browser")
-
+var predictionstring;
 function myfunction(){
 
     inputfield = document.querySelectorAll("input");
@@ -32,6 +32,8 @@ function myfunction(){
    .then((response) => { return response.json()})
    .then((data) => {
                  prediction = data.prediction;
+                 predictionstring = prediction;
+                 yogarecommendationarray = data.yoga_recommendation;
                  document.getElementById("disease_prediction").innerHTML="";
                  var tag = document.createElement("h1");
                  var text = document.createTextNode("Prediction : "+prediction);
@@ -39,10 +41,27 @@ function myfunction(){
                  var element = document.getElementById("disease_prediction");
                  element.appendChild(tag);
                  console.log(data[0].prediction)})
+                 const buttonName = document.querySelector(".showrecommendation")
+                 buttonName.id="showrec"
+                 element.appendChild(buttonName)
    .catch((error) => console.log('ERROR'))
  }
  
+
+ function yogaRecommendation(){
+
+  let list = document.getElementById("yoga_recommendation_list");
+  list.innerHTML="";
+  for (i = 0; i < yogarecommendationarray.length; ++i) {
+    var li = document.createElement('li');
+    li.innerText = yogarecommendationarray[i];
+    list.appendChild(li);
+ }
+ }
+
+
  const submitbutton = document.querySelector("button");
  submitbutton.addEventListener("click",myfunction);
- 
+ const recommendationbutton=document.querySelector(".showrecommendation")
+ recommendationbutton.addEventListener("click",yogaRecommendation)
   
