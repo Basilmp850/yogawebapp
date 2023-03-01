@@ -51,7 +51,7 @@ function myfunction(){
  function yogaRecommendation(){
 
   let list = document.getElementById("yoga_recommendation_list");
-  list.innerHTML="";
+  list.innerHTML="Yoga Recommendation: -\n";
   for (i = 0; i < yogarecommendationarray.length; ++i) {
     var li = document.createElement('li');
     li.innerText = yogarecommendationarray[i];

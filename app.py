@@ -47,10 +47,10 @@ global capture, switch, out
 capture=0
 switch=1
 camera = cv2.VideoCapture('posefind.mp4')
-frame_width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
-video = cv2.VideoWriter('processed_video.avi', cv2.VideoWriter_fourcc(*'X264'),
-                        25, (frame_width, frame_height))
+# frame_width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
+# frame_height = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
+# video = cv2.VideoWriter('processed_video.avi', cv2.VideoWriter_fourcc(*'X264'),
+                        # 25, (frame_width, frame_height))
 
 def allowed_file(filename):
     return '.' in filename and \
