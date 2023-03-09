@@ -8,6 +8,7 @@ html{
     font-family: 'Inter', sans-serif;
 }
 
+
 .title{
     font-weight: bold;
     font-size: 1.4rem;
@@ -20,8 +21,13 @@ html{
     background-color: rgb(177, 216, 216);
     margin-left:auto;
     margin-right:auto;
-    display:grid;
-	grid-template-columns: 1fr 300px;
+    /* display:grid; */
+	/* grid-template-columns: 1fr 300px; */
+    /* background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjEQHJIeYhztofzxL-8paMhvYBd0Ww9BSigDEyahTNFONeiU7hY5Fwg1RYXZvsBsIfENs&usqp=CAU');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center; */
+    height: 100vh;
 
 	
 	align-items: start;
@@ -42,9 +48,9 @@ nav{
     font-weight: 800;
     letter-spacing: 1.1px;
 }
-main{
-    background-color: turquoise;
-}
+ main{
+    background-color: rgb(177, 216, 216);
+} 
 
 
 aside{
@@ -90,7 +96,7 @@ main{
 
 .el{
     border: 2px solid black;
-   
+    
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -133,30 +139,30 @@ main{
    line-height: 1.5rem;
    letter-spacing: 0.1rem;
 }
-.el1 button{
+/* .el1 button{
     width:75%;
     font-size: 1rem;
     letter-spacing: 3px;
    
-}
+} */
 .el1{
     grid-column: 1/span 2;
     
     margin-top: 10px;
-}
-.el1 h3{
+} 
+/* .el1 h3{
     font-size: 1.6rem;
     font-weight: 800;
     
 
 
-}
-.el1 p{
+} */
+/* .el1 p{
     font-size: 0.8rem;
     letter-spacing: 0.1rem;
     line-height: 1.5rem;
     width:81%;
-}
+} */
 aside p{
     text-align: center;
     padding: 10px;
@@ -183,7 +189,13 @@ aside p{
 
 .imgcontainer{
     height:650px;
+
 }
+
+/* .imgid{
+    display:block;
+    height:650px;
+} */
 
 img{
     height:100%;
@@ -241,3 +253,31 @@ img{
     display: block;
 }
 
+.flexcontainer{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    height: 100vh;
+    margin-top: 55px;
+}
+
+.subofchr{
+    width: 120px;
+    height: 45px;
+    background-color: blue;
+    border-radius: 2px solid grey;
+    color:white;
+
+
+}
+
+.showrecommendation{
+
+    width: 300px;
+    height: 75px;
+    background-color: blue;
+    border-radius: 2px solid grey;
+    color:white;
+}

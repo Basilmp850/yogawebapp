@@ -16,6 +16,8 @@ function myfunction(){
     input1 = inputfield[0].value;
     input2 = inputfield[1].value;
     input3 = inputfield[2].value;
+    input4 = inputfield[3].value;
+    input5 = inputfield[4].value;
  
     fetch('http://127.0.0.1:5000/chronicpost', { 
     method: 'POST',
@@ -26,7 +28,9 @@ function myfunction(){
     body: JSON.stringify({
      symptom1 : input1,
      symptom2 : input2,
-     symptom3 : input3
+     symptom3 : input3,
+     symptom4 : input4,
+     symptom5 : input5
    })
  })
    .then((response) => { return response.json()})
@@ -49,14 +53,17 @@ function myfunction(){
  
 
  function yogaRecommendation(){
-
+  stringname = ""
   let list = document.getElementById("yoga_recommendation_list");
-  list.innerHTML="Yoga Recommendation: -\n";
+  // list.innerHTML="Yoga Recommendation: -\n";
   for (i = 0; i < yogarecommendationarray.length; ++i) {
     var li = document.createElement('li');
     li.innerText = yogarecommendationarray[i];
-    list.appendChild(li);
+    // list.appendChild(li);
+    stringname = stringname + yogarecommendationarray[i] + "\n";
+    
  }
+alert(stringname)
  }
 
 

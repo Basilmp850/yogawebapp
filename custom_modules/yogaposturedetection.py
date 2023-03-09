@@ -157,7 +157,7 @@ class MoveNetPreprocessor(object):
           should_keep_image = min_landmark_score >= detection_threshold
           if not should_keep_image:
             self._messages.append('Skipped ' + image_path +
-                                  '. No pose was confidentlly detected.')
+                                  '. No pose was confidently detected.')
             continue
 
           valid_image_count += 1

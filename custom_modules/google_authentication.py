@@ -41,8 +41,8 @@ def callback():
     # print(request.args["state"]+" - request state")
     flow.fetch_token(authorization_response=request.url)
     #for security purposes. Fix this later.
-    # if not (session["state"]==request.args["state"]):
-    #   abort(500) # state does not match
+    if not (session["state"]==request.args["state"]):
+      abort(500) # state does not match
 
     credentials = flow.credentials
     request_session = requests.session()

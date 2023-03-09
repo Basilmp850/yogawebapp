@@ -5,6 +5,8 @@ symptoms = {
         "symptom1" : "",
         "symptom2" : "",
         "symptom3" : "",
+        "symptom4" : "",
+        "symptom5" : "",
         "prediction": ""
     }
 
@@ -82,21 +84,32 @@ def predictDisease(symptoms):
 def chronicpost():
     prediction_attributes=""
     if request.method=="POST":
+     first = 1
      requestdata = request.get_json();
-     term1 = (requestdata['symptom1']) if len(requestdata['symptom1'])!=0 else ''
-     prediction_attributes+=term1
-     for i in range(2,4,1):
-      if term1=='' and i==2:
-           term = (requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
-      else: 
-       term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
-      prediction_attributes+=term
-
+    #  term1 = (requestdata['symptom1']) if len(requestdata['symptom1'])!=0 else ''
+    #  prediction_attributes+=term1
+     for i in range(1,6,1):
+      term = requestdata['symptom'+str(i)]
+      if not len(term)==0 and first:
+        term = (requestdata['symptom'+str(i)])
+        first=0
+      elif len(term)==0:
+           continue
+      else:
+           term=','+term
+      prediction_attributes+=term          
+    #   if term1=='' and i==2:
+    #        term = (requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+    #   else: 
+    #    term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+      print(prediction_attributes)
      prediction = predictDisease(prediction_attributes)["final_prediction"]
      symptoms = {    
         "symptom1" : requestdata['symptom1'],
         "symptom2" : requestdata['symptom2'],
         "symptom3" : requestdata['symptom3'],
+        "symptom4" : requestdata['symptom4'],
+        "symptom5" : requestdata['symptom5'],
         "prediction" : prediction,
         "yoga_recommendation" : yogarecommendation[prediction]
      }

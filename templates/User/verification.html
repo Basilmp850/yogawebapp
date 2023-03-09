@@ -1,0 +1,19 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>OTP Verification</title>  
+</head>  
+  
+<body>  
+  
+<form action = "http://localhost:5000/user/validate" method="post">  
+  
+<h4> One-time password has been sent to the email id. Please check the email for the verification.</h4>  
+        <input name="user-id" type="hidden" value="{{user_id}}">
+Enter OTP: <input type="text" name="otp">  
+  
+<input type="submit" value="Submit">  
+  
+</form>  
+</body>  
+</html>  
