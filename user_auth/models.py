@@ -18,16 +18,17 @@ mail = Mail(app)
 
 db = mongoclient.User_authentication
 class User:
-    def start_session(self,user):
+    def start_session(self,user,verification_status=False):
         print("1")
         session['logged_in']=True
         print("2")
         session['user']=user
         session['name']=user['name']
         session['verified']=True
-        db.User.update_one({"email":user['email']},{"$set":{"verified": True}})
-        print("3")
-        return redirect(url_for('hello'))
+        if not verification_status:
+         db.User.update_one({"email":user['email']},{"$set":{"verified": True}})
+         return redirect(url_for('hello'))
+        return jsonify(user),200
 
     def signup(self):
         user = {
@@ -71,8 +72,8 @@ class User:
         user = db.User.find_one({"email": request.form.get('email')})
         flag = 0
         if user and pbkdf2_sha256.verify(request.form.get('psw'),user['password']):
-            if user['verified']==True:
-             return self.start_session(user)
+            if user['verified']:
+             return self.start_session(user,verification_status=True)
             else:
                flag = 1
         if flag:

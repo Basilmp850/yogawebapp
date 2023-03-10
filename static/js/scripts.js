@@ -42,7 +42,7 @@ $('#loginform').submit(function(e) {
             window.location.href='/home'
         },
         error: function(resp){
-            console.log(resp);
+            // console.log(resp);
             $error.text(resp.responseJSON.error).removeClass("error--hidden")
         }
     });

@@ -53,8 +53,10 @@
     
 </form>
   <a href="{{url_for('login')}}" id="google-login">Sign in with google</a>
+  {% if email: %}
+  <p id="user-exists-google">{{email}} exists</p>
+{% endif %}
 </div>
-  
 
 </div>
 
