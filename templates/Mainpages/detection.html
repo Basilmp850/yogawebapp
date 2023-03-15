@@ -1,25 +1,40 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
 <div class="uploadform">
-    <h1>Upload Image</h1>
-   <form method=post enctype=multipart/form-data>
+    <h1>UPLOAD VIDEO</h1>
+   <form id="file-upload-form" enctype=multipart/form-data>
   <input type=file name=file class="file">
-  <input type=submit value=Upload class="submit">
+  <!-- <input type=submit value=Upload class="submit"> -->
+  <input class="btn btn-primary" value="Upload" type="submit">
   </form>
+  <!-- {% if image_uploaded[0]['full_filename']: %}
   <button class="detectposebutton" id = "{{image_uploaded[0]['idname']}}" >Detect Yoga Pose</button>
-      <img src="../{{ image_uploaded[0]['full_filename'] }}" class = "imgcontainer" >
-  <!-- <img src="{{ uploaded_image }}" class = "imgcontainer" > -->
-  
+  {% endif %} -->
+  <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
+  </div>
+<div class="videocontainer" id="uploadedvideocontainer">
+
+    </div>
+        <!-- <img src="../{{ image_uploaded[0]['full_filename'] }}" class = "imgcontainer" > -->
   {% if pose_prediction : %}
   <h1>Yoga Pose detected : {{pose_prediction}}</h1>
   {% endif %}
  </div>
- <!-- <div class="uploadform">
+ <!-- <div class="uploadform">  
     <h1>Upload video</h1>
     <form action="/uploadvideo" method=post enctype=multipart/form-data>
    <input type=file name=file class="file">
    <input type=submit value=Upload class="submit">
    </form>
  </div> -->
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename='js/jquery.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+<script src="{{url_for('static', filename='js/detection.js')}}"></script>
 {% endblock %}

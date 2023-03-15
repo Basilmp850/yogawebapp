@@ -1,4 +1,4 @@
-from flask import redirect, session, abort,request
+from flask import redirect, session, abort,request,url_for,render_template
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 from google.oauth2 import id_token
@@ -7,7 +7,7 @@ import pathlib
 import os
 import requests
 from app import app
-
+from user_auth.models import db
 
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"]="1" #possibly requires change in future
@@ -25,6 +25,7 @@ flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file,
 def login():
     authorization_url, state = flow.authorization_url()
     session["state"]=state
+    print(authorization_url)
     return redirect(authorization_url)
     # print(session)
     # print(session["state"]+"- initial state")
@@ -41,8 +42,8 @@ def callback():
     # print(request.args["state"]+" - request state")
     flow.fetch_token(authorization_response=request.url)
     #for security purposes. Fix this later.
-    # if not (session["state"]==request.args["state"]):
-    #   abort(500) # state does not match
+    if not (session["state"]==request.args["state"]):
+      abort(500) # state does not match
 
     credentials = flow.credentials
     request_session = requests.session()
@@ -52,11 +53,20 @@ def callback():
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token,
         request=token_request,
-        audience=os.getenv("CLIENT_ID")
+        audience=os.getenv("CLIENT_ID"),
+        clock_skew_in_seconds=1
     )
     session['google_id']=id_info.get("sub")
-    
+    session['email']=id_info.get("email")
     session["name"]=id_info.get("name")
+
+    user=db.User.find_one({"email": session['email']})
+    if user:  
+        email=session['email']
+        session.clear()
+        return render_template('User/signup.html',email=email)
+
+    # print(session)
     return redirect("/home")
 
 

@@ -8,43 +8,71 @@ html{
     font-family: 'Inter', sans-serif;
 }
 
+
 .title{
     font-weight: bold;
     font-size: 1.4rem;
-    margin-left:15px;
+ 
+    flex-basis: 13%;
+    margin-right:50px;
+}
+
+body{
+    background-color: #091529;
 }
 
 
 .container{
-    width:99.5%;
-    background-color: rgb(177, 216, 216);
+    width:75%;
+    background-color: #091529;
     margin-left:auto;
     margin-right:auto;
-    display:grid;
-	grid-template-columns: 1fr 300px;
-
-	
-	align-items: start;
+    /* display:grid; */
+    /* grid-template-columns: 1fr 300px; */
+    /* background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjEQHJIeYhztofzxL-8paMhvYBd0Ww9BSigDEyahTNFONeiU7hY5Fwg1RYXZvsBsIfENs&usqp=CAU');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center; */
+    height: 100vh;
+    padding-top:66px;
+    
+    align-items: start;
+    margin-bottom:222px;
    
 }
 
 nav{
     display:flex;
-    justify-content: space-between;
-    height: 8vh;
+    justify-content: center;
+    height: 10.3vh;
     align-items: center;
+    position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .navbuttons{
     width:54%;
     display: flex;
-    justify-content: space-evenly;
-    font-weight: 800;
+    align-items: center;
+    justify-content:space-evenly;
+    
+    font-size: 15px;
     letter-spacing: 1.1px;
+    flex-basis:50%;
+    margin-left:200px;
+    
 }
-main{
-    background-color: turquoise;
+.navbuttons div{
+    margin-left:-200px;
+    
 }
+ main{
+    background-color: #091529;
+} 
 
 
 aside{
@@ -53,10 +81,10 @@ aside{
 
 nav{
     grid-column: 1/span 2;
-    background-color: rgb(100, 100, 211);
+    background-color: #091529;
 }
 footer{
-    grid-column: 1/span 2;
+    /* grid-column: 1/span 2; */
     text-align: center;
     background-color:grey;
     font-size: 0.75rem;
@@ -66,8 +94,10 @@ footer{
     display: flex;
     align-items: center;
     justify-content: center;
+   
+   
 }
-.navbuttons a{
+.navbuttons a,.logout a{
     text-decoration: none;
     color: white;
 }
@@ -76,87 +106,131 @@ main{
     background-image: url("../Assets/pexels-min-an-749114.jpg");
     background-size:cover;
     display:grid;
-    height: 1200px;
-    grid-template-rows: 26% 25% 25%;
-    grid-template-columns: 33% 33%;
+    grid-template-rows: repeat(5, 288px);
+    
     justify-content: center;
     align-content: center;
-    row-gap: 80px;
-    column-gap:75px;
+    row-gap: 40px;
+    margin-top:40px;
+    margin-bottom:40px;
+    
 }
 
 
 
 
 .el{
-    border: 2px solid black;
-   
-    background-color: white;
+    border-radius: 10px;
     display: flex;
-    flex-direction: column;
+    background-color: #1d2a4a;
+    /* display: flex; */
+    flex-direction: row;
     align-items:center;
-    justify-content:space-between;
+    /* justify-content:space-between; */
+    /* height: 270px; */
     
    
 }
+
+
+
+.spacefortext {
+  flex-basis: 55%;
+  /* background-color: #cc1f1f; */
+  
+}
+
+.spacefortext p{
+    
+}
+.imagecontainer{
+    flex-basis: 45%;
+    background-color: #c2cecc;
+    height: 100%;
+    width: auto;
+    
+    
+   
+}
+
+
+
+
+
+
 .el h3{
     text-transform: uppercase;
     
-    background-color: chartreuse;
-    width:100%;
-    letter-spacing: 0.15rem;
+    /* background-color: chartreuse; */
+   
+    /* letter-spacing: 0.15rem; */
     text-align: center;
     font-weight: 600;
     padding-top:13px;
     padding-bottom :13px;
-    font-size: 1rem;
-    line-height: 1.6rem;
+    font-size: 3rem;
+    line-height: 4rem;
+    white-space: pre-wrap;
+    text-align: left;
+    margin-left:60px;
+    display: flex;
+    align-items: center;
+    font-family: cursive;
     
 }
 .el button{
     background-color: orange;
-    padding:7px;
+   
     cursor: pointer;
     margin-bottom:25px;
-    width:47%;
-    font-size:0.9rem;
+    width:35%;
+    font-size:1rem;
     letter-spacing: 1.8px;
     font-weight:800;
-    border-radius: 5px;
+    
+    background: none;
+    border: none;
+   
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    margin-left:15px;
+    color: #60f1e3;
+  
    
 }
 .el p{
     align-self: center;
-   margin-left: 3px;
-   width:80%;
-   font-size: 0.8rem;
+   margin-left: 40px;
+   
+   font-size: 1rem;
    line-height: 1.5rem;
    letter-spacing: 0.1rem;
+   color: #fefeff;
+   font-weight: bold;
+   margin-bottom:70px;
+   margin-right:44px;
 }
-.el1 button{
+/* .el1 button{
     width:75%;
     font-size: 1rem;
     letter-spacing: 3px;
    
-}
-.el1{
-    grid-column: 1/span 2;
-    
-    margin-top: 10px;
-}
-.el1 h3{
+} */
+
+/* .el1 h3{
     font-size: 1.6rem;
     font-weight: 800;
     
 
 
-}
-.el1 p{
+} */
+/* .el1 p{
     font-size: 0.8rem;
     letter-spacing: 0.1rem;
     line-height: 1.5rem;
     width:81%;
-}
+} */
 aside p{
     text-align: center;
     padding: 10px;
@@ -165,7 +239,9 @@ aside p{
     letter-spacing: 1.6px;
 }
 
-
+.title{
+    color: #fefeff;
+}
 
 .containerofvideocapture{
     width:100%;
@@ -175,7 +251,7 @@ aside p{
     align-items: center;
     gap: 20px;
     height:712px;
-   
+    margin-top: 70px;
     background-color: rgb(159, 233, 233);
 
     
@@ -183,7 +259,13 @@ aside p{
 
 .imgcontainer{
     height:650px;
+
 }
+
+/* .imgid{
+    display:block;
+    height:650px;
+} */
 
 img{
     height:100%;
@@ -194,11 +276,10 @@ img{
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-   margin-top:12px;
-   gap:8px;
+  margin-top: 95px;
+   gap:30px;
   
 }
-
 
 .containerofimage{
 
@@ -242,3 +323,142 @@ img{
     display: block;
 }
 
+.flexcontainer{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+   
+    margin-top: 95px;
+    
+    width:600px;
+    height:650px;
+    margin-left:auto;
+    margin-right:auto;
+    border-radius:15px;
+    background-color: #1d2a4a;
+    
+}
+
+.flexcontainer h1{
+    color:#60f1e3;
+    margin-bottom:10px;
+
+    
+}
+.flexcontainer input{
+
+    border:none;
+    background-color:white;
+    width: 45%;
+    height:30px;
+}
+
+.flexcontainer label{
+    color: #60f1e3;
+    text-transform: uppercase;
+}
+.subofchr{
+    width: 120px;
+    height: 45px;
+    background-color: #60f1e3;
+    border-radius: 2px;
+    color:#091529;
+    border:none;
+    cursor : pointer;
+    text-transform: uppercase;
+    font-weight: bolder;
+    font-size:1.5rem;
+    width:170px;
+    letter-spacing: 2px;
+    margin-top:11px;
+    border-radius:7px;
+
+}
+
+.showrecommendation{
+
+    width: 300px;
+    height: 75px;
+    background-color: blue;
+    border-radius: 2px solid grey;
+    color:white;
+}
+
+.containerofchronic{
+
+    background-color: #091529;
+    padding-top:7px;
+}
+
+.modal {
+display: none;
+position: fixed;
+z-index: 1;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+background-color: #5ad679;
+/* border: 1px solid #888; */
+width: 450px;
+height: 500px;
+border-radius: 5px;
+transition: display 2s ease-in-out;
+
+}
+
+.modal.show {
+display:block;
+}
+
+.modal-content {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+height: 100%;
+flex-direction: column;
+
+}
+
+.backdrop {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.9);
+display: none;
+}
+
+.titleyogarec{
+
+font-size:1.8rem;
+margin-top:50px;
+font-style: italic;
+
+}
+.recyoga{
+font-size:2.8rem;
+margin-top:160px;
+font-weight:bolder;
+text-transform: uppercase;
+letter-spacing:1px;
+}
+
+.usernameonnav{
+
+color:#c2cecc;
+text-transform: uppercase;
+font-weight: bolder;
+
+}
+
+.logout{
+background-color: #279b6a;
+padding:9px;
+width:85px;
+text-align: center;
+border-radius:9px;
+margin-left:20px;
+}

@@ -1,8 +1,31 @@
 {% extends "base.html" %}
 
 
+{% block navbar %} 
+<nav>
+    <div class="title">YOGA MENTOR</div>
+    
+    <!-- <div class= "title">{{name}}</div> -->
+   
+    <div class="navbuttons">
+        <div class="home"><a href="{{ url_for('hello')}}">Home</a></div>
+        <div class="aboutus"><a href="{{ url_for('aboutus') }}">About us</a></div>
+        <div class="contactus"><a href="{{ url_for('contactus') }}">Contact us</a></div>
+        
+    </div>
+
+    <div class="usernameonnav">
+        <p>{{name}}</p>
+        
+    </div>
+    <div class="logout"><a href="{{ url_for('logout') }}">Log out</a></div>
+ 
+</nav>
+{% endblock %}
+
 {% block content %}
-<h1>Select Symptoms</h1>
+<div class="flexcontainer">
+<h1>SELECT SYMPTOMS</h1>
 <label for="1">Symptom 1 : </label>
 <input type="text"  list="symptoms1" name="1">
 <datalist id="symptoms1" class="symptoms">
@@ -18,11 +41,22 @@
 <datalist id="symptoms3" class="symptoms">
     
 </datalist>
-    <button name ="submit">Submit</button>
+<label for="4">Symptom 4 : </label>
+<input type="text" list="symptoms4" name="4">
+<datalist id="symptoms4" class="symptoms">
+    
+</datalist>
+<label for="5">Symptom 5 : </label>
+<input type="text" list="symptoms5" name="5">
+<datalist id="symptoms5" class="symptoms">
+    
+</datalist>
+    <button class = "subofchr" name ="submit">Submit</button>
 <div id="disease_prediction">
        
 </div>
 <button class="showrecommendation">See recommendation</button>
+</div>
 <ul id="yoga_recommendation_list"></ul>
 <script>
     // var up = document.getElementById('symptoms');
