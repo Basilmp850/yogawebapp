@@ -20,8 +20,17 @@ On windows: -
 python -m venv virtualenv
 
 
+Activate the virtual environment 
+-------------------------------------------
+On Windows: -
+venv/Scripts/activate
+
+
 Install the required packages(in requirements.txt file)
 ---------------------------------------------------------
 On windows: -
 pip install -r requirements.txt
+
+Recommended Python Version : Python 3.9
+---------------------------------------
 
