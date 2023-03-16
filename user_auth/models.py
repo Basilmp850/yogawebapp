@@ -5,7 +5,8 @@ from app import mongoclient
 from app import app
 from flask_mail import Mail,Message
 from random import randint
-
+import os
+from pathlib import Path
 
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
 app.config["MAIL_PORT"] = 465     
@@ -19,12 +20,16 @@ mail = Mail(app)
 db = mongoclient.User_authentication
 class User:
     def start_session(self,user,verification_status=False):
-        print("1")
         session['logged_in']=True
-        print("2")
         session['user']=user
+        session['user_id']=user['_id']
         session['name']=user['name']
         session['verified']=True
+        if not os.path.exists(session['user_id']):
+           os.makedirs(session['user_id']+'/uploadedimage/chair')
+           os.makedirs(session['user_id']+'/uploaded_video')
+
+
         if not verification_status:
          db.User.update_one({"email":user['email']},{"$set":{"verified": True}})
          return redirect(url_for('hello'))

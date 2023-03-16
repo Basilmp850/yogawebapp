@@ -4,7 +4,7 @@ from tensorflow import keras
 import pandas as pd
 import os
 import sys
-pose_sample_rpi_path = os.path.join(os.getcwd(), 'examples/lite/examples/pose_estimation/raspberry_pi')
+pose_sample_rpi_path = os.path.join(os.getcwd(), 'movenet_folder/lite/examples/pose_estimation/raspberry_pi')
 sys.path.append(pose_sample_rpi_path)
 import utils
 from  data import BodyPart  
@@ -15,7 +15,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import pickle 
-from examples.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
+from movenet_folder.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
 
 movenet = Movenet('movenet_thunder')
 # BodyPart =  pickle.load(open('pickled_files/BodyPart.pkl', 'rb'))

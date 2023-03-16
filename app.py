@@ -24,6 +24,9 @@ file_details = [
 
 mongoclient = MongoClient(os.getenv("MONGO_CLIENT"))
 db=mongoclient.User_authentication
+global user_header
+user_header = ""
+
 
 IMAGES_ROOT = "static"
 images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
@@ -209,6 +212,9 @@ def gen_frames(uploaded_filename=""):  # generate frame by frame from camera
 @login_required
 def hello():
     print(session)
+    global user_header
+    user_header=session['user_id']
+    print("-----------------------------"+user_header)
     return render_template('index.html',name=session["name"].split()[0])
 
 @app.route('/getvariables')

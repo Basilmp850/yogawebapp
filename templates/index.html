@@ -13,20 +13,14 @@
     <nav>
         <div class="title">YOGA MENTOR</div>
         
-        <!-- <div class= "title">{{name}}</div> -->
+        <div class= "title">{{name}}</div>
        
         <div class="navbuttons">
-            <div class="home"><a href="{{ url_for('hello')}}">Home</a></div>
-            <div class="aboutus"><a href="{{ url_for('aboutus') }}">About us</a></div>
-            <div class="contactus"><a href="{{ url_for('contactus') }}">Contact us</a></div>
-            
+            <div class="home"><a href="{{ url_for('hello')}}">HOME</a></div>
+            <div class="aboutus"><a href="{{ url_for('aboutus') }}">ABOUT US</a></div>
+            <div class="contactus"><a href="{{ url_for('contactus') }}">CONTACT US</a></div>
+            <div class="logout"><a href="{{ url_for('logout') }}">LOG OUT</a></div>
         </div>
-
-        <div class="usernameonnav">
-            <p>{{name}}</p>
-            
-        </div>
-        <div class="logout"><a href="{{ url_for('logout') }}">Log out</a></div>
      
     </nav>
 
