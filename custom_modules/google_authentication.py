@@ -8,7 +8,9 @@ import os
 import requests
 from app import app
 from user_auth.models import db
+import uuid
 
+import custom_modules.yogaposturedetection as ygp
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"]="1" #possibly requires change in future
 
@@ -19,7 +21,8 @@ flow = Flow.from_client_secrets_file(client_secrets_file=client_secrets_file,
     redirect_uri="http://127.0.0.1:5000/callback"
 )
 
-
+# global preprocessor
+# preprocessor = None
 
 @app.route("/login")
 def login():
@@ -61,11 +64,39 @@ def callback():
     session["name"]=id_info.get("name")
 
     user=db.User.find_one({"email": session['email']})
-    if user:  
+
+    if user and "password" in user:  
         email=session['email']
         session.clear()
         return render_template('User/signup.html',email=email)
-
+    if not user:
+     user = {
+            "_id":uuid.uuid4().hex,
+            "name": session['name'],
+            "email": session['email'],
+            "verified": True
+        }
+    
+     db.User.insert_one(user)
+    
+    session['user_id']=user['_id']
+    if not os.path.exists(session['user_id']):
+           os.makedirs(session['user_id']+'/uploadedimage/chair')
+           os.makedirs(session['user_id']+'/image_csv')
+           os.makedirs(session['user_id']+'/uploaded_video')
+           os.makedirs(session['user_id']+'/processed_videos')
+    # global preprocessor
+    user_header=session['user_id']
+    app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
+    images_in_test_folder = os.path.join(user_header, 'uploadedimage')
+    images_out_test_folder = 'uploadedimage_output'
+    csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+    preprocessor = ygp.MoveNetPreprocessor(
+    images_in_folder=images_in_test_folder,
+    images_out_folder=images_out_test_folder,
+    csvs_out_path=csvs_out_test_path
+            )
+    session['preprocessor']=preprocessor
     # print(session)
     return redirect("/home")
 

@@ -7,6 +7,10 @@ from flask_mail import Mail,Message
 from random import randint
 import os
 from pathlib import Path
+import custom_modules.yogaposturedetection as ygp
+import json
+import jsonpickle
+from json import JSONEncoder
 
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
 app.config["MAIL_PORT"] = 465     
@@ -15,11 +19,18 @@ app.config['MAIL_PASSWORD'] = 'dbyczdyjhldjtdzl'
 app.config['MAIL_USE_TLS'] = False  
 app.config['MAIL_USE_SSL'] = True  
 
+class EmployeeEncoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+# global preprocessor
 mail = Mail(app)   
 
 db = mongoclient.User_authentication
+
 class User:
     def start_session(self,user,verification_status=False):
+        # global preprocessor
         session['logged_in']=True
         session['user']=user
         session['user_id']=user['_id']
@@ -27,9 +38,37 @@ class User:
         session['verified']=True
         if not os.path.exists(session['user_id']):
            os.makedirs(session['user_id']+'/uploadedimage/chair')
+           os.makedirs(session['user_id']+'/image_csv')
            os.makedirs(session['user_id']+'/uploaded_video')
+           os.makedirs(session['user_id']+'/processed_videos')
+        
+        user_header=session['user_id']
+        app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
+        images_in_test_folder = os.path.join(user_header, 'uploadedimage')
+        images_out_test_folder = 'uploadedimage_output'
+        csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+        preprocessor = ygp.MoveNetPreprocessor(
+        images_in_folder=images_in_test_folder,
+        images_out_folder=images_out_test_folder,
+        csvs_out_path=csvs_out_test_path
+            )
+        print("-----------------Before Loading-------------------")
+        print(preprocessor)
+        preprocessorJSON = jsonpickle.encode(preprocessor, unpicklable=True)
+        print("----------------------preprocessorJSON")
+        print(preprocessorJSON)
+        # preprocessorJSONData = json.dumps(preprocessorJSON, indent=4)
+        # print("----------------------preprocessorJSONDATA")
+        # print(preprocessorJSONData)
+        # preprocessor_decodedJSON = jsonpickle.decode(preprocessorJSONData)
+        # print("------------------------------preprocessor_decodedJSON")
+        # print(preprocessor_decodedJSON)
 
-
+        # preprocessor_loadedJSON = jsonpickle.decode(preprocessorJSON)
+        # print("---------------- After loading-----------------------")
+        # print(preprocessor_loadedJSON)
+        print("preprocessor MARKING --------------------------")
+        session['preprocessor']=preprocessorJSON
         if not verification_status:
          db.User.update_one({"email":user['email']},{"$set":{"verified": True}})
          return redirect(url_for('hello'))
@@ -59,8 +98,9 @@ class User:
         user["random-otp"] = randint(000000,999999)
         db.User.update_one({"email":user['email']},{"$set":{"random-otp": user["random-otp"]}})
         print(user)
-        msg = Message('OTP',sender = 'stramerjosh@gmail.com', recipients = [user['email']])  
-        msg.body = "Your OTP is: "+str(user["random-otp"])  
+        msg = Message(str(user['random-otp']),sender = 'jonathannebu10@gmail.com', recipients = [user['email']])  
+        # msg.body = "Your OTP is: "+str(user["random-otp"])  
+        msg.html = render_template('Basic_layouts/verification_mail.html',otp=user['random-otp'])
         mail.send(msg)  
         # render_template(url_for('verification'),email=user['email'])
         return jsonify(user),200

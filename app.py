@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 import custom_modules.yogaposturedetection as ygp
 import custom_modules.yogaposecorrection as ypc
+import jsonpickle
 
 load_dotenv()
 file_details = [
@@ -28,15 +29,19 @@ global user_header
 user_header = ""
 
 
-IMAGES_ROOT = "static"
-images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
-images_out_test_folder = 'uploadedimage_output'
-csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
-preprocessor = ygp.MoveNetPreprocessor(
-images_in_folder=images_in_test_folder,
-images_out_folder=images_out_test_folder,
-csvs_out_path=csvs_out_test_path,
-            )
+
+# global images_in_test_folder, images_out_test_folder, csvs_out_test_path, first
+first = True
+# IMAGES_ROOT = "static"
+# images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
+# images_out_test_folder = 'uploadedimage_output'
+# csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
+# preprocessor = ygp.MoveNetPreprocessor(
+#      images_in_folder=images_in_test_folder,
+#      images_out_folder=images_out_test_folder,
+#      csvs_out_path=csvs_out_test_path,
+#             )
+
 
 
 allowed_formats = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','mp4'])
@@ -49,6 +54,7 @@ import custom_modules.diseaseprediction as diseasepredictor
 import custom_modules.yogafrombenefits as yogafrombenefits
 app.secret_key = "JonOnFire"
 from user_auth import routes
+import user_auth.models as user_authorization_model
 from user_auth.models import User
 
 def login_required(function): 
@@ -61,7 +67,7 @@ def login_required(function):
         
     return wrapper
 
-app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploaded_video')
+# app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploaded_video')
 # app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploadedimage/chair')
 
 
@@ -71,7 +77,7 @@ correction=0
 capture=0
 switch=1
 camera = cv2.VideoCapture(0)
-image_loc = 'static/uploadedimage/chair'
+
 
 global previous_command, previous_closest_label
 previous_command=""
@@ -86,9 +92,12 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in allowed_formats
 predicted_pose = ""
 
-def gen_frames(uploaded_filename=""):  # generate frame by frame from camera
+def gen_frames(preprocessor,uploaded_filename=""):  # generate frame by frame from camera
+    image_loc = user_header+'/uploadedimage/chair'
     global out, capture, correction
     global previous_closest_label, previous_command
+    # print(session['preprocessor'])
+    # preprocessor=jsonpickle.decode(preprocessorJSON)
     previous_closest_label=""
     i=0
     previous_command=""
@@ -136,16 +145,16 @@ def gen_frames(uploaded_filename=""):  # generate frame by frame from camera
         command=""
         if success:
             
-            for file in os.listdir('static/uploadedimage/chair'):
-             os.remove('static/uploadedimage/chair/' + file)
+            for file in os.listdir(user_header+'/uploadedimage/chair'):
+             os.remove(user_header+'/uploadedimage/chair/' + file)
             
             cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
-            # csvs_out_test_path = 'uploaded_image.csv'
-            for file in os.listdir('static/image_csv'):
-             os.remove('static/image_csv/' + file)
+            csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+            for file in os.listdir(user_header+'/image_csv'):
+             os.remove(user_header+'/image_csv/' + file)
 
             preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
-            if len(os.listdir('static/image_csv'))!=0:
+            if len(os.listdir(user_header+'/image_csv'))!=0:
              X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
@@ -211,10 +220,23 @@ def gen_frames(uploaded_filename=""):  # generate frame by frame from camera
 @app.route('/home/')
 @login_required
 def hello():
-    print(session)
-    global user_header
-    user_header=session['user_id']
-    print("-----------------------------"+user_header)
+    # global first,images_in_test_folder,images_out_test_folder,csvs_out_test_path,first
+    if first:  
+     global user_header
+     user_header=session['user_id']
+    # print(session['preprocessor'])
+    #  if google_authentication.preprocessor:
+    #     user_authorization_model.preprocessor = google_authentication.preprocessor
+    #  app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
+    #  images_in_test_folder = os.path.join(user_header, 'uploadedimage')
+    #  images_out_test_folder = 'uploadedimage_output'
+    #  csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+    #  preprocessor = ygp.MoveNetPreprocessor(
+    #  images_in_folder=images_in_test_folder,
+    #  images_out_folder=images_out_test_folder,
+    #  csvs_out_path=csvs_out_test_path,
+    #         )
+    #  first=False
     return render_template('index.html',name=session["name"].split()[0])
 
 @app.route('/getvariables')
@@ -230,15 +252,14 @@ def getvariables(methods=['GET']):
 
 @app.route("/")
 def start_page():
+    if ("google_id" in session) or ('logged_in' in session): 
+       return redirect(url_for('hello'))
     return render_template('User/signup.html')
 
 # @app.route("/<user_id>")
 # def start_page1(user_id=""):
 #     return render_template('User/signup.html', user_id=user_id)
     
-@app.route('/register/')
-def register():
-    pass
 
 @app.route("/protected_area/")
 @login_required
@@ -260,7 +281,7 @@ def contactus():
 @login_required
 def video_feed():
     if(switch):
-     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor'])), mimetype='multipart/x-mixed-replace; boundary=frame')
     else: 
         return "No response"
 
@@ -292,13 +313,16 @@ def benefits():
 
 
 @app.route('/detection/', methods = ['POST','GET'])
+@login_required
 def detection():
     full_filename = ""
     y_pred_lab=""
     print("0")
+    preprocessorJSON = session['preprocessor']
+    preprocessor = jsonpickle.decode(preprocessorJSON)
     if request.method == 'POST':
         print("1")
-        for file in os.listdir('static/uploaded_video'):
+        for file in os.listdir(user_header+'/uploaded_video'):
           os.remove('static/uploaded_video/' + file)
         for file in os.listdir('static/processed_videos'):
           os.remove('static/processed_videos/' + file)
