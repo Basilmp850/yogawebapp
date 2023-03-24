@@ -15,6 +15,7 @@ html{
  
     flex-basis: 13%;
     margin-right:50px;
+    margin-bottom:0px;
 }
 
 body{
@@ -461,4 +462,8 @@ width:85px;
 text-align: center;
 border-radius:9px;
 margin-left:20px;
+}
+
+.usernameonnav p{
+    margin:auto;
 }

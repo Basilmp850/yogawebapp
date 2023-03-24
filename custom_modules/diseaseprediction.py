@@ -28,6 +28,7 @@ yogarecommendation = pickle.load(open('./pickled_files/yogarecommendationdiction
 # encoder = LabelEncoder()
 # data["prognosis"] = encoder.fit_transform(data["prognosis"])
 # encoder = LabelEncoder()
+print(yogarecommendation)
 test_data["prognosis"] = encoder.fit_transform(test_data["prognosis"])
 X = data.iloc[:,:-1]
 symptoms = X.columns.values
@@ -80,27 +81,69 @@ def predictDisease(symptoms):
 
 @app.route('/chronicpost',methods=['POST'])
 def chronicpost():
+    print("1")
     prediction_attributes=""
     if request.method=="POST":
-     requestdata = request.get_json();
-     term1 = (requestdata['symptom1']) if len(requestdata['symptom1'])!=0 else ''
-     prediction_attributes+=term1
-     for i in range(2,4,1):
-      if term1=='' and i==2:
-           term = (requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
-      else: 
-       term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
-      prediction_attributes+=term
-
+     print("2")
+     first = 1
+     requestdata = {
+          "symptom1": request.form.get("1"),
+          "symptom2": request.form.get("2"),
+          "symptom3": request.form.get("3"),
+          "symptom4": request.form.get("4"),
+          "symptom5": request.form.get("5")
+     }
+     print("3")
+    #  term1 = (requestdata['symptom1']) if len(requestdata['symptom1'])!=0 else ''
+    #  prediction_attributes+=term1
+     for i in range(1,6,1):
+      term = requestdata['symptom'+str(i)]
+      if not len(term)==0 and first:
+        term = (requestdata['symptom'+str(i)])
+        first=0
+      elif len(term)==0:
+           continue
+      else:
+           term=','+term
+      prediction_attributes+=term          
+    #   if term1=='' and i==2:
+    #        term = (requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+    #   else: 
+    #    term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+     print(prediction_attributes)
      prediction = predictDisease(prediction_attributes)["final_prediction"]
      symptoms = {    
-        "symptom1" : requestdata['symptom1'],
-        "symptom2" : requestdata['symptom2'],
-        "symptom3" : requestdata['symptom3'],
-        "prediction" : prediction,
-        "yoga_recommendation" : yogarecommendation[prediction]
+          "symptom1": request.form.get("1"),
+          "symptom2": request.form.get("2"),
+          "symptom3": request.form.get("3"),
+          "symptom4": request.form.get("4"),
+          "symptom5": request.form.get("5"),
+          "prediction" : prediction if not prediction=="Peptic ulcer diseae" else "Peptic ulcer disease",
+          "yoga_recommendation":  yogarecommendation[prediction] if not prediction=='Peptic ulcer diseae' else yogarecommendation["Peptic ulcer disease"]
      }
 
      return jsonify(symptoms)
+    # prediction_attributes=""
+    # if request.method=="POST":
+    #  requestdata = request.get_json();
+    #  term1 = (requestdata['symptom1']) if len(requestdata['symptom1'])!=0 else ''
+    #  prediction_attributes+=term1
+    #  for i in range(2,4,1):
+    #   if term1=='' and i==2:
+    #        term = (requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+    #   else: 
+    #    term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
+    #   prediction_attributes+=term
+
+    #  prediction = predictDisease(prediction_attributes)["final_prediction"]
+    #  symptoms = {    
+    #     "symptom1" : requestdata['symptom1'],
+    #     "symptom2" : requestdata['symptom2'],
+    #     "symptom3" : requestdata['symptom3'],
+    #     "prediction" : prediction,
+    #     "yoga_recommendation" : yogarecommendation[prediction]
+    #  }
+
+    #  return jsonify(symptoms)
     
 

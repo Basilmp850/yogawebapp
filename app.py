@@ -25,15 +25,15 @@ file_details = [
 
 mongoclient = MongoClient(os.getenv("MONGO_CLIENT"))
 db=mongoclient.User_authentication
-global user_header
-user_header = ""
+# global user_header
+# user_header = ""
 
 
 
 # global images_in_test_folder, images_out_test_folder, csvs_out_test_path, first
 first = True
-# IMAGES_ROOT = "static"
-# images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
+IMAGES_ROOT = "static"
+images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
 # images_out_test_folder = 'uploadedimage_output'
 # csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
 # preprocessor = ygp.MoveNetPreprocessor(
@@ -92,7 +92,8 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in allowed_formats
 predicted_pose = ""
 
-def gen_frames(preprocessor,uploaded_filename=""):  # generate frame by frame from camera
+def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame by frame from camera
+    # user_header=session['user_header']
     image_loc = user_header+'/uploadedimage/chair'
     global out, capture, correction
     global previous_closest_label, previous_command
@@ -221,9 +222,10 @@ def gen_frames(preprocessor,uploaded_filename=""):  # generate frame by frame fr
 @login_required
 def hello():
     # global first,images_in_test_folder,images_out_test_folder,csvs_out_test_path,first
-    if first:  
-     global user_header
-     user_header=session['user_id']
+    app.config['UPLOAD_FOLDER'] = os.path.join(session['user_header'], 'uploadedimage/chair')
+    # if first:  
+    #  global user_header
+    #  user_header=session['user_id']
     # print(session['preprocessor'])
     #  if google_authentication.preprocessor:
     #     user_authorization_model.preprocessor = google_authentication.preprocessor
@@ -281,7 +283,7 @@ def contactus():
 @login_required
 def video_feed():
     if(switch):
-     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor'])), mimetype='multipart/x-mixed-replace; boundary=frame')
+     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor']),user_header=session['user_header']), mimetype='multipart/x-mixed-replace; boundary=frame')
     else: 
         return "No response"
 
@@ -299,7 +301,7 @@ def chronic():
 @app.route('/benefits/')
 @login_required
 def benefits():
-    return render_template('Mainpages/benefits.html')
+    return render_template('Mainpages/benefits.html',name=session["name"].split()[0])
 
 # @app.route('/liveyogacorrection/')
 # @login_required
@@ -311,168 +313,220 @@ def benefits():
 
 
 
+# @app.route('/detection/', methods = ['POST','GET'])
+# def detection():
+
+#     full_filename = ""
+#     y_pred_lab=""
+#     if request.method == 'POST':
+#         for file in os.listdir('static/uploadedimage/chair/'):
+#           os.remove('static/uploadedimage/chair/' + file)
+#         if 'file' not in request.files:
+#             flash('No file part')
+#             return redirect(request.url)
+#         file = request.files['file'] 
+#         if file.filename == '':
+#             flash('No selected file')
+#             return redirect(request.url)
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
+#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#             #processing
+#             # csvs_out_test_path = 'uploaded_image.csv'
+#             IMAGES_ROOT = "static"
+#             images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
+#             images_out_test_folder = 'uploadedimage_output'
+#             csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
+#             preprocessor = ygp.MoveNetPreprocessor(
+#             images_in_folder=images_in_test_folder,
+#             images_out_folder=images_out_test_folder,
+#              csvs_out_path=csvs_out_test_path,
+#             )
+#             preprocessor.process(per_pose_class_limit=None,detection_threshold=0.1)
+#             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+#             y_pred = ygp.model.predict(X_test)
+#             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+#             y_pred_lab = y_pred_label[0]
+#             print(full_filename)
+#             file_details[0]["full_filename"] = full_filename
+#             file_details[0]["idname"] = "detectbutton"
+            
+
+#     return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab)
+
 
 @app.route('/detection/', methods = ['POST','GET'])
 @login_required
 def detection():
-    full_filename = ""
-    y_pred_lab=""
-    print("0")
+#     full_filename = ""
+#     y_pred_lab=""
+#     print("0")
+#     preprocessorJSON = session['preprocessor']
+#     preprocessor = jsonpickle.decode(preprocessorJSON)
+#     user_header=session['user_header']
+#     image_loc = user_header+'/uploadedimage/chair'
+#     if request.method == 'POST':
+#         print("1")
+#         for file in os.listdir(user_header+'/uploaded_video'):
+#           os.remove(user_header+'/uploaded_video/' + file)
+#         for file in os.listdir(user_header+'/processed_videos'):
+#           os.remove(user_header+'/processed_videos/' + file)
+#         print("2")
+#         if 'file' not in request.files:
+#             print("No file part")
+#             flash('No file part')
+#             return redirect(request.url)
+#         file = request.files['file'] 
+#         print("3")
+#         # print('file-----'+type(file))
+#         if file.filename == '':
+#             flash('No selected file')
+#             return redirect(request.url)
+#         print("4")
+#         if file and allowed_file(file.filename):
+#             filename = secure_filename(file.filename)
+#             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
+#             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+#             print("----------" + file.content_type)
+#             #processing
+#             # csvs_out_test_path = 'uploaded_image.csv'
+#             codec = cv2.VideoWriter_fourcc(*'x264')
+#             output_file = user_header+'/processed_videos/processed_video.mp4'
+#             cap = cv2.VideoCapture(full_filename)
+#             width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH ))
+#             height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT ))
+#             fps = cap.get(cv2.CAP_PROP_FPS)
+#             output_size = (width, height) 
+#             out = cv2.VideoWriter(output_file, codec, fps, output_size)
+#             i=0
+#             previous_closest_label=""
+#             while cap.isOpened():
+#                 # Read a frame from the video source
+#               ret, frame = cap.read()
+#               if i%30: 
+#                 cv2.putText(
+#                  img = frame,
+#                  text = previous_closest_label if not previous_closest_label=="" else "No Pose Detected!!",
+#                  org = (200, 200),
+#                  fontFace = cv2.FONT_HERSHEY_DUPLEX,
+#                  fontScale = 1.0,
+#                  color = (125, 246, 55),
+#                  thickness = 3
+#                  )
+#                 i=i+1
+#                 out.write(frame)
+#                 continue 
+#               else:
+#                 y_pred_lab=""
+#                 if not ret:
+#                     break
+#                   # If there are no more frames, break out of the loop
+#                 for file in os.listdir(user_header+'/uploadedimage/chair'):
+#                     os.remove(user_header+'/uploadedimage/chair/' + file)
+            
+#                 cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+#                 csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+#                 for file in os.listdir(user_header+'/image_csv'):
+#                     os.remove(user_header+'/image_csv/' + file)
+#                 preprocessor.process(per_pose_class_limit=None)
+#                 if len(os.listdir(user_header+'/image_csv'))!=0:
+#                  X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+#                  y_pred = ygp.model.predict(X_test)
+#                  y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+#                  y_pred_lab = y_pred_label[0]
+#                  print(full_filename)
+
+                
+#                 cv2.putText(
+#                  img = frame,
+#                  text = y_pred_lab if not y_pred_lab=="" else "No Pose Detected!!",
+#                  org = (200, 200),
+#                  fontFace = cv2.FONT_HERSHEY_DUPLEX,
+#                  fontScale = 1.0,
+#                  color = (125, 246, 55),
+#                  thickness = 3
+#                 )
+#                 previous_closest_label=y_pred_lab
+#                 predicted_pose=y_pred_lab
+#                 print("----------------------" + full_filename)        
+                 
+#     # Write the frame to the output video
+#                 out.write(frame)
+                
+#     # Display the frame (optional)
+#                 if cv2.waitKey(1) & 0xFF == ord('q'):
+#                     break
+#                 i=i+1
+# # Release the VideoCapture and VideoWriter objects
+#             print("5")
+#             cap.release()
+#             out.release()
+#             cv2.destroyAllWindows()
+#             file_details[0]["full_filename"] = "processed_video.mp4"
+#             file_details[0]["idname"] = "detectbutton"   
+#             file_details[0]['user_header']=session['user_header']
+#             print("6")
+
+#             # return render_template('Mainpages/detection.html', image_uploaded = file_details)   
+#             return jsonify(file_details)
+            
+#     else:
+# #      return render_template('Mainpages/detection.html', image_uploaded = file_details, name=session['name'].split()[0])    
     preprocessorJSON = session['preprocessor']
     preprocessor = jsonpickle.decode(preprocessorJSON)
+    user_header=session['user_header']
+    image_loc = user_header+'/uploadedimage/chair'
+    full_filename = ""
+    y_pred_lab=""
     if request.method == 'POST':
-        print("1")
-        for file in os.listdir(user_header+'/uploaded_video'):
-          os.remove('static/uploaded_video/' + file)
-        for file in os.listdir('static/processed_videos'):
-          os.remove('static/processed_videos/' + file)
-        print("2")
+        csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+        for file in os.listdir(user_header+'/uploadedimage/chair/'):
+          os.remove(user_header+'/uploadedimage/chair/' + file)
         if 'file' not in request.files:
-            print("No file part")
             flash('No file part')
             return redirect(request.url)
         file = request.files['file'] 
-        print("3")
-        # print('file-----'+type(file))
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-        print("4")
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            print("----------" + file.content_type)
             #processing
             # csvs_out_test_path = 'uploaded_image.csv'
-            codec = cv2.VideoWriter_fourcc(*'x264')
-            output_file = "static/processed_videos/processed_video.mp4"
-            cap = cv2.VideoCapture(full_filename)
-            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH ))
-            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT ))
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            output_size = (width, height) 
-            out = cv2.VideoWriter(output_file, codec, fps, output_size)
-            i=0
-            previous_closest_label=""
-            while cap.isOpened():
-                # Read a frame from the video source
-              ret, frame = cap.read()
-              if i%30: 
-                cv2.putText(
-                 img = frame,
-                 text = previous_closest_label if not previous_closest_label=="" else "No Pose Detected!!",
-                 org = (200, 200),
-                 fontFace = cv2.FONT_HERSHEY_DUPLEX,
-                 fontScale = 1.0,
-                 color = (125, 246, 55),
-                 thickness = 3
-                 )
-                i=i+1
-                out.write(frame)
-                continue 
-              else:
-                y_pred_lab=""
-                if not ret:
-                    break
-                  # If there are no more frames, break out of the loop
-                for file in os.listdir('static/uploadedimage/chair'):
-                    os.remove('static/uploadedimage/chair/' + file)
-            
-                cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
-            # csvs_out_test_path = 'uploaded_image.csv'
-                for file in os.listdir('static/image_csv'):
-                    os.remove('static/image_csv/' + file)
-                preprocessor.process(per_pose_class_limit=None)
-                if len(os.listdir('static/image_csv'))!=0:
-                 X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
-                 y_pred = ygp.model.predict(X_test)
-                 y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
-                 y_pred_lab = y_pred_label[0]
-                 print(full_filename)
+            preprocessor.process(per_pose_class_limit=None,detection_threshold=0.1)
+            if len(os.listdir(user_header+'/image_csv'))!=0:
+             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+             y_pred = ygp.model.predict(X_test)
+             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_lab = y_pred_label[0]
+             print(full_filename)
+             file_details[0]["full_filename"] = full_filename
+             file_details[0]["idname"] = "detectbutton"
+             file_details[0]['user_header']=session['user_header']
+             file_details[0]['pose_prediction']=y_pred_lab
+        return jsonify(file_details)
 
-                
-                cv2.putText(
-                 img = frame,
-                 text = y_pred_lab if not y_pred_lab=="" else "No Pose Detected!!",
-                 org = (200, 200),
-                 fontFace = cv2.FONT_HERSHEY_DUPLEX,
-                 fontScale = 1.0,
-                 color = (125, 246, 55),
-                 thickness = 3
-                )
-                previous_closest_label=y_pred_lab
-                predicted_pose=y_pred_lab
-                print("----------------------" + full_filename)        
-                 
-    # Write the frame to the output video
-                out.write(frame)
-                
-    # Display the frame (optional)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-                i=i+1
-# Release the VideoCapture and VideoWriter objects
-            print("5")
-            cap.release()
-            out.release()
-            cv2.destroyAllWindows()
-            file_details[0]["full_filename"] = "processed_video.mp4"
-            file_details[0]["idname"] = "detectbutton"   
-            print("6")
-
-            # return render_template('Mainpages/detection.html', image_uploaded = file_details)   
-            return jsonify(file_details)
-            
-    else:
-     return render_template('Mainpages/detection.html', image_uploaded = file_details, name=session['name'].split()[0])    
-    # full_filename = ""
-    # y_pred_lab=""
-    # if request.method == 'POST':
-    #     for file in os.listdir('static/uploadedimage/chair/'):
-    #       os.remove('static/uploadedimage/chair/' + file)
-    #     if 'file' not in request.files:
-    #         flash('No file part')
-    #         return redirect(request.url)
-    #     file = request.files['file'] 
-    #     if file.filename == '':
-    #         flash('No selected file')
-    #         return redirect(request.url)
-    #     if file and allowed_file(file.filename):
-    #         filename = secure_filename(file.filename)
-    #         full_filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
-    #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    #         #processing
-    #         # csvs_out_test_path = 'uploaded_image.csv'
-    #         preprocessor.process(per_pose_class_limit=None,detection_threshold=0.1)
-    #         if len(os.listdir('static/image_csv'))!=0:
-    #          X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
-    #          y_pred = ygp.model.predict(X_test)
-    #          y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
-    #          y_pred_lab = y_pred_label[0]
-    #          print(full_filename)
-    #          file_details[0]["full_filename"] = full_filename
-    #          file_details[0]["idname"] = "detectbutton"
-            
-
-    # return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab)
+    return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab)
 
 
-# @app.route('/detection/uploadvideo',methods=['POST'])
-# def upload_video():
-# 	if 'file' not in request.files:
-# 		flash('No file part')
-# 		return redirect(request.url)
-# 	file = request.files['file']
-# 	if file.filename == '':
-# 		flash('No image selected for uploading')
-# 		return redirect(request.url)
-# 	else:
-# 		filename = secure_filename(file.filename)
-# 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-# 		#print('upload_video filename: ' + filename)
-# 		flash('Video successfully uploaded and displayed below')
-# 		return render_template('detection.html', filename=filename)
+@app.route('/detection/uploadvideo',methods=['POST'])
+def upload_video():
+	if 'file' not in request.files:
+		flash('No file part')
+		return redirect(request.url)
+	file = request.files['file']
+	if file.filename == '':
+		flash('No image selected for uploading')
+		return redirect(request.url)
+	else:
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		#print('upload_video filename: ' + filename)
+		flash('Video successfully uploaded and displayed below')
+		return render_template('detection.html', filename=filename)
 
 
 

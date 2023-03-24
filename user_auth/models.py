@@ -36,13 +36,14 @@ class User:
         session['user_id']=user['_id']
         session['name']=user['name']
         session['verified']=True
-        if not os.path.exists(session['user_id']):
-           os.makedirs(session['user_id']+'/uploadedimage/chair')
-           os.makedirs(session['user_id']+'/image_csv')
-           os.makedirs(session['user_id']+'/uploaded_video')
-           os.makedirs(session['user_id']+'/processed_videos')
-        
-        user_header=session['user_id']
+                
+        user_header='static/'+session['user_id']
+        if not os.path.exists(user_header):
+           os.makedirs(user_header+'/uploadedimage/chair')
+           os.makedirs(user_header+'/image_csv')
+           os.makedirs(user_header+'/uploaded_video')
+           os.makedirs(user_header+'/processed_videos')
+        session['user_header']=user_header
         app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
         images_in_test_folder = os.path.join(user_header, 'uploadedimage')
         images_out_test_folder = 'uploadedimage_output'

@@ -24,6 +24,7 @@
 {% endblock %}
 
 {% block content %}
+<form id="symptoms-form">
 <div class="flexcontainer">
 <h1>SELECT SYMPTOMS</h1>
 <label for="1">Symptom 1 : </label>
@@ -57,7 +58,18 @@
 </div>
 <button class="showrecommendation">See recommendation</button>
 </div>
-<ul id="yoga_recommendation_list"></ul>
+</form>
+<div id="myModal" class="modal">
+    <div id="yogarecommendation_modal" class="modal-content">
+        <p class="titleyogarec">Yoga Recommendation</p>
+        <p class="recyoga">Sherrshasana</p>
+        <ul id="yoga_recommendation_list"></ul>
+    </div>
+</div>
+
+<div id="myBackdrop" class="backdrop"></div>
+
+
 <script>
     // var up = document.getElementById('symptoms');
     var down = document.getElementById('gfg');
@@ -96,8 +108,23 @@
             }
         
         }
+
+        const modal = document.getElementById("myModal");
+        const backdrop = document.getElementById("myBackdrop");
+
+
+
+backdrop.addEventListener("click", function() {
+	modal.classList.remove("show");
+	backdrop.style.display = "none";
+});
     
 
 </script>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{url_for('static', filename='js/jquery.js')}}"></script>
 <script src="{{url_for('static', filename='js/diseasepredictionscript.js')}}"></script>
 {% endblock %}

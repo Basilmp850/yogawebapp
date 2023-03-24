@@ -9,7 +9,7 @@ import requests
 from app import app
 from user_auth.models import db
 import uuid
-
+import jsonpickle
 import custom_modules.yogaposturedetection as ygp
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"]="1" #possibly requires change in future
@@ -80,13 +80,14 @@ def callback():
      db.User.insert_one(user)
     
     session['user_id']=user['_id']
-    if not os.path.exists(session['user_id']):
-           os.makedirs(session['user_id']+'/uploadedimage/chair')
-           os.makedirs(session['user_id']+'/image_csv')
-           os.makedirs(session['user_id']+'/uploaded_video')
-           os.makedirs(session['user_id']+'/processed_videos')
+    user_header='static/'+session['user_id']
+    if not os.path.exists(user_header):
+           os.makedirs(user_header+'/uploadedimage/chair')
+           os.makedirs(user_header+'/image_csv')
+           os.makedirs(user_header+'/uploaded_video')
+           os.makedirs(user_header+'/processed_videos')
     # global preprocessor
-    user_header=session['user_id']
+    session['user_header']=user_header
     app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
     images_in_test_folder = os.path.join(user_header, 'uploadedimage')
     images_out_test_folder = 'uploadedimage_output'
@@ -96,7 +97,8 @@ def callback():
     images_out_folder=images_out_test_folder,
     csvs_out_path=csvs_out_test_path
             )
-    session['preprocessor']=preprocessor
+    preprocessorJSON = jsonpickle.encode(preprocessor, unpicklable=True)
+    session['preprocessor']=preprocessorJSON
     # print(session)
     return redirect("/home")
 
