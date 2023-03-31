@@ -1,25 +1,39 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
 <div class="uploadform">
-    <h1>Upload Image</h1>
-   <form method=post enctype=multipart/form-data>
+    <h1>UPLOAD IMAGE</h1>
+   <form id="file-upload-form" enctype=multipart/form-data>
   <input type=file name=file class="file">
-  <input type=submit value=Upload class="submit">
+  <!-- <input type=submit value=Upload class="submit"> -->
+  <input class="btn btn-primary" value="Upload" type="submit">
   </form>
+  <!-- {% if image_uploaded[0]['full_filename']: %}
   <button class="detectposebutton" id = "{{image_uploaded[0]['idname']}}" >Detect Yoga Pose</button>
-      <img src="../{{ image_uploaded[0]['full_filename'] }}" class = "imgcontainer" >
-  <!-- <img src="{{ uploaded_image }}" class = "imgcontainer" > -->
-  
-  {% if pose_prediction : %}
+  {% endif %} -->
+<div class="videocontainer" id="uploadedvideocontainer">
+    </div>
+        <!-- <img src="../{{ image_uploaded[0]['full_filename'] }}" class = "imgcontainer" > -->
+  <!-- {% if pose_prediction : %}
   <h1>Yoga Pose detected : {{pose_prediction}}</h1>
-  {% endif %}
+  {% endif %} -->
+  <div id="pose_prediction">
+
+  </div>
  </div>
- <!-- <div class="uploadform">
+ <!-- <div class="uploadform">  
     <h1>Upload video</h1>
     <form action="/uploadvideo" method=post enctype=multipart/form-data>
    <input type=file name=file class="file">
    <input type=submit value=Upload class="submit">
    </form>
  </div> -->
+{% endblock %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="{{url_for('static', filename='js/detection.js')}}"></script>
 {% endblock %}

@@ -1,69 +1,446 @@
 {% extends "base.html" %} 
 
 {% block bodycontent %} 
-<div class="container">
+<!-- <style>
+*{
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    font-family: 'Inter', sans-serif;
+}
+
+
+.title{
+    font-weight: bold;
+    font-size: 1.4rem;
+    margin-left:15px;
+}
+
+body{
+    background-color: #091529;
+}
+
+
+.container{
+    width:75%;
+    background-color: #091529;
+    margin-left:auto;
+    margin-right:auto;
+    /* display:grid; */
+	/* grid-template-columns: 1fr 300px; */
+    /* background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjEQHJIeYhztofzxL-8paMhvYBd0Ww9BSigDEyahTNFONeiU7hY5Fwg1RYXZvsBsIfENs&usqp=CAU');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center; */
+    height: 100vh;
+    padding-top:66px;
+	
+	align-items: start;
+    margin-bottom:222px;
+   
+}
+
+nav{
+    display:flex;
+    justify-content: space-between;
+    height: 10.3vh;
+    align-items: center;
+    position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.navbuttons{
+    width:54%;
+    display: flex;
+    justify-content: space-evenly;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+}
+ main{
+    background-color: #091529;
+} 
+
+
+aside{
+    background-color: brown;
+}
+
+nav{
+    grid-column: 1/span 2;
+    background-color: #091529;
+}
+footer{
+    /* grid-column: 1/span 2; */
+    text-align: center;
+    background-color:grey;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    color:white;
+    height:4vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+   
+}
+.navbuttons a{
+    text-decoration: none;
+    color: white;
+}
+
+main{
+    background-image: url("../Assets/pexels-min-an-749114.jpg");
+    background-size:cover;
+    display:grid;
+    grid-template-rows: repeat(5, 288px);
+    
+    justify-content: center;
+    align-content: center;
+    row-gap: 40px;
+    margin-top:40px;
+    margin-bottom:40px;
+    
+}
+
+
+
+
+.el{
+    border-radius: 10px;
+    display: flex;
+    background-color: #1d2a4a;
+    /* display: flex; */
+    flex-direction: row;
+    align-items:center;
+    /* justify-content:space-between; */
+    /* height: 270px; */
+    
+   
+}
+
+
+
+.spacefortext {
+  flex-basis: 55%;
+  /* background-color: #cc1f1f; */
+  
+}
+
+.spacefortext p{
+    
+}
+.imagecontainer{
+    flex-basis: 45%;
+    background-color: #c2cecc;
+    height: 100%;
+    width: auto;
+    
+    
+   
+}
+
+
+
+
+
+
+.el h3{
+    text-transform: uppercase;
+    
+    /* background-color: chartreuse; */
+   
+    /* letter-spacing: 0.15rem; */
+    text-align: center;
+    font-weight: 600;
+    padding-top:13px;
+    padding-bottom :13px;
+    font-size: 3rem;
+    line-height: 4rem;
+    white-space: pre-wrap;
+    text-align: left;
+    margin-left:60px;
+    display: flex;
+    align-items: center;
+    font-family: cursive;
+    
+}
+.el button{
+    background-color: orange;
+   
+    cursor: pointer;
+    margin-bottom:25px;
+    width:35%;
+    font-size:1rem;
+    letter-spacing: 1.8px;
+    font-weight:800;
+    
+    background: none;
+    border: none;
+   
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    margin-left:15px;
+    color: #60f1e3;
+  
+   
+}
+.el p{
+    align-self: center;
+   margin-left: 40px;
+   
+   font-size: 1rem;
+   line-height: 1.5rem;
+   letter-spacing: 0.1rem;
+   color: #fefeff;
+   font-weight: bold;
+   margin-bottom:70px;
+   margin-right:44px;
+}
+/* .el1 button{
+    width:75%;
+    font-size: 1rem;
+    letter-spacing: 3px;
+   
+} */
+
+/* .el1 h3{
+    font-size: 1.6rem;
+    font-weight: 800;
+    
+
+
+} */
+/* .el1 p{
+    font-size: 0.8rem;
+    letter-spacing: 0.1rem;
+    line-height: 1.5rem;
+    width:81%;
+} */
+aside p{
+    text-align: center;
+    padding: 10px;
+    color: white;
+    font-weight: 500;
+    letter-spacing: 1.6px;
+}
+
+
+
+.containerofvideocapture{
+    width:100%;
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    height:712px;
+   
+    background-color: rgb(159, 233, 233);
+
+    
+}
+
+.imgcontainer{
+    height:650px;
+
+}
+
+/* .imgid{
+    display:block;
+    height:650px;
+} */
+
+img{
+    height:100%;
+}
+
+.uploadform{
+  display:flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+   margin-top:60px;
+   gap:30px;
+  
+}
+
+.containerofimage{
+
+    background-color:rgb(150, 230, 230);
+    
+}
+
+.file,.submit{
+
+    padding:10px;
+    border-radius:3px;
+    background-color: burlywood;
+
+}
+
+.file{
+    background-color:coral;
+}
+
+.stop,.click{
+    padding:12px;
+    background-color: bisque;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-top: 50px;
+}
+
+.detectposebutton{
+    opacity: 0;
+}
+
+#detectbutton{
+    opacity: 1;
+}
+
+.showrecommendation{
+    display: none;
+}
+
+#showrec{
+    display: block;
+}
+
+.flexcontainer{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    height: 100vh;
+    margin-top: 55px;
+}
+
+.subofchr{
+    width: 120px;
+    height: 45px;
+    background-color: blue;
+    border-radius: 2px solid grey;
+    color:white;
+
+
+}
+
+.showrecommendation{
+
+    width: 300px;
+    height: 75px;
+    background-color: blue;
+    border-radius: 2px solid grey;
+    color:white;
+}
+</style> -->
+<body>
+
     <nav>
         <div class="title">YOGA MENTOR</div>
         
-        <div class= "title">{{name}}</div>
+        <!-- <div class= "title">{{name}}</div> -->
        
         <div class="navbuttons">
-            <div class="home"><a href="{{ url_for('hello')}}">HOME</a></div>
-            <div class="aboutus"><a href="{{ url_for('aboutus') }}">ABOUT US</a></div>
-            <div class="contactus"><a href="{{ url_for('contactus') }}">CONTACT US</a></div>
-            <div class="logout"><a href="{{ url_for('logout') }}">LOG OUT</a></div>
+            <div class="home"><a href="{{ url_for('hello')}}">Home</a></div>
+            <div class="aboutus"><a href="{{ url_for('aboutus') }}">About us</a></div>
+            <div class="contactus"><a href="{{ url_for('contactus') }}">Contact us</a></div>
+            
         </div>
+    
+        <div class="usernameonnav">
+            <p>{{name}}</p>
+            
+        </div>
+        <div class="logout"><a href="{{ url_for('logout') }}">Log out</a></div>
      
     </nav>
-
+    <div class="container">
     <main>
         <div class="el el1">
-            <h3>Yoga Posture Correction</h3>
-            <p>LIVE MONITORING OF YOGA POSTURE USING INTEGRATED AI WHICH GIVES INSTRUCTIONS FOR YOU TO PERFORM YOGASANA MORE EFFECTIVELY! </p>
+            <div class="spacefortext">
+                
+                <p>LIVE MONITORING OF YOGA POSTURE USING INTEGRATED AI WHICH GIVES INSTRUCTIONS FOR YOU TO PERFORM YOGASANA MORE EFFECTIVELY! </p>
                
-            <button type="button" onclick="window.location.href=`{{ url_for('capture_pose') }}`;">Explore Now!</button>
+                <button type="button" onclick="window.location.href=`{{ url_for('capture_pose') }}`;">> Explore Now!</button>
+            </div>
+            <div class="imagecontainer">
+                <h3>Live yoga detection</h3>
+            </div>
         </div>
         <div class="el el2">
-            <h3>Yoga posture detection</h3>
+            <div class="spacefortext">
+            
             <p>PREDICTS THE CORRECT YOGA POSE FROM THE VIDEO UPLOADED BY THE USER!
                 </p>
-         <button type="button" onclick="window.location.href=`{{ url_for('detection') }}`;">Explore Now!</button>
+         <button type="button" onclick="window.location.href=`{{ url_for('detection') }}`;">> Explore Now!</button>
+           </div>
+           <div class="imagecontainer">
+            <h3>Yoga detection from image</h3>
+           </div>
 
 
         </div>
         <div class="el el3">
-            <h3>Chronic Disease Detection</h3>
+            <div class="spacefortext">
+            
             <p>DETECTION OF CHRONIC DISEASES FROM THE SYMPTOMS PROVIDED BY THE USER!
                 </p>
-                <button type="button" onclick="window.location.href=`{{ url_for('chronic') }}`;">Explore Now!</button>
+                <button type="button" onclick="window.location.href=`{{ url_for('chronic') }}`;">> Explore Now!</button>
+            </div>
+            <div class="imagecontainer">
+                <h3>Chronic Disease Detection</h3>
+            </div>
         </div>
+
+
         <div class="el el4">
-            <h3>Yoga Recommendation from Benefits</h3>
+            <div class="spacefortext">
+            
             <p>RECOMMENDS YOGA BASED ON USER'S SPECIFIC NEEDS!
                 </p>
-                <button type="button" onclick="window.location.href=`{{ url_for('benefits') }}`;">Explore Now!</button>
-
+                <button type="button" onclick="window.location.href=`{{ url_for('benefits') }}`;">> Explore Now!</button>
+            </div>
+            <div class="imagecontainer">
+                <h3>Yoga Rec from Benefits</h3>
+            </div>
 
         </div>
         <div class="el el5">
-            <h3>Yoga Recommendation for Chronic Diseases</h3>
-            <p>RECOMMENDS YOGA FOR PREVENTING CHRONIC DISEASES!
+            <div class="spacefortext">
+           
+            <p>PROVIDES LIVE CORRECTION INSTRUCTIONS
                </p>
-               <button type="button" onclick="window.location.href=`{{ url_for('preventionchronic') }}`;">Explore Now!</button>
+               <button type="button" onclick="window.location.href=`{{ url_for('yogacorrectionform') }}`;">> Explore Now!</button>
+               </div>
+        <div class="imagecontainer">
+            <h3>Live Yoga Correction</h3>
+        </div>
         </div>
 
 
     </main>
-   
-    <aside>
+
+    <!-- <aside>
         <p>Latest News</p>
-    </aside>
+    </aside> -->
 
     <footer>
         <p>© 2022 | All Rights Reserved </p>
 
 
     </footer>
-</div>
 
+</div>
 {% endblock %}
+
+</body>

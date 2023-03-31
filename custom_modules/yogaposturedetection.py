@@ -4,7 +4,7 @@ from tensorflow import keras
 import pandas as pd
 import os
 import sys
-pose_sample_rpi_path = os.path.join(os.getcwd(), 'examples/lite/examples/pose_estimation/raspberry_pi')
+pose_sample_rpi_path = os.path.join(os.getcwd(), 'movenet_folder/lite/examples/pose_estimation/raspberry_pi')
 sys.path.append(pose_sample_rpi_path)
 import utils
 from  data import BodyPart  
@@ -15,10 +15,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import pickle 
-from examples.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
+from movenet_folder.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
 
 movenet = Movenet('movenet_thunder')
-# BodyPart =  pickle.load(open('pickled_files/BodyPart.pkl', 'rb'))
+# BodyPart =  pickle.load(open('pickled_files/BodyPt.pkl', 'rb'))
 # movenet = pickle.load(open('pickled_files/movenet.pkl','rb'))
 # model = pickle.load(open('pickled_files/yogadetectionmodel.pkl','rb'))
 model = tf.keras.models.load_model('pickled_files/my_model.h5')
@@ -270,7 +270,7 @@ class MoveNetPreprocessor(object):
 #   return image_np
 
 
-csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
+# csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
 # IMAGES_ROOT = "static"
 # images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
 # images_out_test_folder = 'uploadedimage_output'
@@ -318,8 +318,8 @@ def load_pose_landmarks(csv_path):
 # Split training data (X, y) into (X_train, y_train) and (X_val, y_val)
 # X_train, X_val, y_train, y_val = train_test_split(X, y,
                                                   # test_size=0.15)
-if len(os.listdir('static/image_csv'))!=0:
- X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
+# if len(os.listdir('static/image_csv'))!=0:
+#  X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
 def get_center_point(landmarks, left_bodypart, right_bodypart):
   """Calculates the center point of the two given landmarks."""
 
@@ -416,11 +416,11 @@ earlystopping = keras.callbacks.EarlyStopping(monitor='val_accuracy',
 # Start training
 
 # Classify pose in the TEST dataset using the trained model
-if len(os.listdir('static/image_csv'))!=0:
- y_pred = model.predict(X_test)
+# if len(os.listdir('static/image_csv'))!=0:
+#  y_pred = model.predict(X_test)
 
 # Convert the prediction result to class name
- y_pred_label = [class_names[i] for i in np.argmax(y_pred, axis=1)]
+#  y_pred_label = [class_names[i] for i in np.argmax(y_pred, axis=1)]
 # y_true_label = [class_names[i] for i in np.argmax(y_test, axis=1)]
 
 # print(y_pred_label[0])
