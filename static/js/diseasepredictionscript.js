@@ -80,11 +80,13 @@ var predictionstring;
       success: function(response){
          prediction = response.prediction;
          predictionstring = prediction;
+
         const modal = document.getElementById("myModal");
         const backdrop = document.getElementById("myBackdrop");
         console.log(response.prediction);
         yogarecommendationarray = response.yoga_recommendation;
         $("#yogarecommendation_modal").find(".recyoga").html(response.prediction)
+        $('#yogarecommendation_modal ul').empty()
         for(i=0; i<yogarecommendationarray.length; i++)
         {
          element = "<li>"+yogarecommendationarray[i]+"</li>"

@@ -67,6 +67,7 @@ nav{
     margin-left:200px;
     
 }
+
 .navbuttons div{
     margin-left:-200px;
     
@@ -101,6 +102,21 @@ footer{
 .navbuttons a,.logout a{
     text-decoration: none;
     color: white;
+    height:100%;
+    transition: all 0.3s ease-in-out;
+
+}
+
+.navbuttons a:hover{
+    background: white;
+    color:black;
+    transform: scale(1.8);
+}
+
+.navbuttons .logout a:hover{
+    background: black;
+    color:white;
+    transform: scale(1.1);
 }
 
 main{
@@ -282,6 +298,10 @@ img{
   
 }
 
+.uploadform h1, .poseprediction{
+   color: #c2cecc;
+}
+
 .containerofimage{
 
     background-color:rgb(150, 230, 230);
@@ -441,7 +461,8 @@ font-style: italic;
 }
 .recyoga{
 font-size:2.8rem;
-margin-top:160px;
+margin:10px;
+text-align: center;
 font-weight:bolder;
 text-transform: uppercase;
 letter-spacing:1px;

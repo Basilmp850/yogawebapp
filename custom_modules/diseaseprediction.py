@@ -29,7 +29,7 @@ yogarecommendation = pickle.load(open('./pickled_files/yogarecommendationdiction
 # data["prognosis"] = encoder.fit_transform(data["prognosis"])
 # encoder = LabelEncoder()
 print(yogarecommendation)
-test_data["prognosis"] = encoder.fit_transform(test_data["prognosis"])
+encoder.fit_transform(test_data["prognosis"])
 X = data.iloc[:,:-1]
 symptoms = X.columns.values
 # print(symptoms)

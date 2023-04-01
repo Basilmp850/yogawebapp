@@ -35,6 +35,34 @@ $('#signupform').submit(function(e) {
 
 });
 
+$('#modalform').submit(function(e) {
+    var $form = $(this);
+    var $error = $form.find(".error");
+    var data = $form.serialize();
+    console.log(data)
+    $error.text("Verifying OTP!!")
+    $.ajax({
+        url:"/user/validate",
+        type:"POST",
+        data: data,
+        dataType: "json",
+        success: function(resp){
+            console.log("success: ",resp);
+            window.location.href='/home'
+
+                // window.location.href='/'+resp._id
+            // window.location.href='/user/verify/'+resp._id
+        },
+        error: function(resp){
+            console.log(resp);
+            $error.text(resp.responseJSON.error).removeClass("error--hidden")
+        }
+    });
+    e.preventDefault();
+
+
+});
+
 $('#loginform').submit(function(e) {
     var $form = $(this);
     var $error = $form.find(".error");

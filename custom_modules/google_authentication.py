@@ -11,6 +11,7 @@ from user_auth.models import db
 import uuid
 import jsonpickle
 import custom_modules.yogaposturedetection as ygp
+import shutil
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"]="1" #possibly requires change in future
 
@@ -105,5 +106,9 @@ def callback():
 
 @app.route("/logout")
 def logout():
+    user_header='static/'+session['user_id']
+    print('-----------------------------------------'+user_header)
+    if os.path.exists(user_header):
+        shutil.rmtree(user_header, ignore_errors=True)
     session.clear()
     return redirect('/')

@@ -36,7 +36,8 @@ $('#file-upload-form').submit(function(e) {
         success: function(resp){
             console.log("success: ",resp[0].full_filename);
             console.log("2")
-            $('#uploadvideocontainer').empty()
+            $('#uploadedvideocontainer').empty()
+            $('#pose_prediction').empty()
             // const videocontainer = document.getElementById('videocontainer')
             // videocontainer.innerHTML=""
             // const video = document.createElement('video');
