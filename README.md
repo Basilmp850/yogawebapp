@@ -109,9 +109,7 @@ Steps to run the web app locally
 <!-- CONTACT -->
 ## Contact
 
-Your Name - Jonathan - jonathannebu@gmail.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Jonathan - jonathannebu@gmail.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
