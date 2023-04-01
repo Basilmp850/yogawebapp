@@ -1,6 +1,9 @@
-# yogawebapp
+Yoga Mentor
 Steps to run the web app locally
 -----------------------------------
+
+Recommended Python Version : Python 3.9
+---------------------------------------
 Clone the repository in some directory on your pc
 -------------------------------------------------
 git clone https://github.com/Basilmp850/yogawebapp.git
@@ -29,6 +32,4 @@ Install the dependencies(in requirements.txt file)
 On windows: -
 pip install -r requirements.txt
 
-Recommended Python Version : Python 3.9
----------------------------------------
 
