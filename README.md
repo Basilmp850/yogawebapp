@@ -25,16 +25,16 @@
 ## About The Project
 
 The project is a web app intended to help users learn yoga poses in real time with the use of just a webcam. 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p>
+ -->
 
 
 ### Built With
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
+<!-- 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+ -->
 
 
 <!-- GETTING STARTED -->
@@ -87,7 +87,7 @@ Steps to run the web app locally
 <!-- CONTACT -->
 ## Contact
 
-Jonathan - jonathannebu@gmail.com
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
