@@ -62,16 +62,12 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+The following steps are to provide you details on how you can run the web app locally.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Recommended Python Version : Python 3.9
+----------------------------------------
 
 ### Installation
 
@@ -80,38 +76,12 @@ _Below is an example of how you can instruct your audience on installing and set
 Steps to run the web app locally
 -----------------------------------
 
-Recommended Python Version : Python 3.9
----------------------------------------
-Clone the repository in some directory on your pc
--------------------------------------------------
-git clone https://github.com/Basilmp850/yogawebapp.git
 
-
-Set up a virtual environment by installing virtualenv
--------------------------------------
-On windows, install virtualenv : pip install virtualenv
-
-
-Create a virtual environment
--------------------------------------
-cd <directory_of_clone>
-On windows: -
-python -m virtualenv venv(To create a virtual environment named "venv")
-
-
-Activate the virtual environment 
--------------------------------------------
-On Windows: -
-venv/Scripts/activate
-
-
-Install the dependencies(in requirements.txt file)
----------------------------------------------------------
-On windows: -
-pip install -r requirements.txt
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repository in some directory on your pc
+1. Use a directory on your pc
+   ```sh
+   cd path/to/some/directory
+   ```
+3. Clone the repository in some directory on your pc
    ```sh
    git clone https://github.com/Basilmp850/yogawebapp.git
    ```
@@ -126,6 +96,10 @@ pip install -r requirements.txt
 5. Activate the virtual environment 
    ```sh
    venv/Scripts/activate
+   ```
+6. Install the dependencies(in requirements.txt file)
+   ```sh
+   pip install -r requirements.txt
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
