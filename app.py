@@ -52,6 +52,7 @@ app = Flask(__name__)
 import custom_modules.google_authentication as google_authentication
 import custom_modules.diseaseprediction as diseasepredictor
 import custom_modules.yogafrombenefits as yogafrombenefits
+
 app.secret_key = "JonOnFire"
 from user_auth import routes
 import user_auth.models as user_authorization_model
@@ -222,7 +223,7 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
 @login_required
 def hello():
     # global first,images_in_test_folder,images_out_test_folder,csvs_out_test_path,first
-    app.config['UPLOAD_FOLDER'] = os.path.join(session['user_header'], 'uploadedimage/chair')
+    # app.config['UPLOAD_FOLDER'] = os.path.join(session['user_header'], 'uploadedimage/chair')
     # if first:  
     #  global user_header
     #  user_header=session['user_id']
@@ -473,6 +474,8 @@ def detection():
             
 #     else:
 # #      return render_template('Mainpages/detection.html', image_uploaded = file_details, name=session['name'].split()[0])    
+    app.config['UPLOAD_FOLDER'] = os.path.join(session['user_header'], 'uploadedimage/chair')
+
     preprocessorJSON = session['preprocessor']
     preprocessor = jsonpickle.decode(preprocessorJSON)
     user_header=session['user_header']
@@ -496,7 +499,7 @@ def detection():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             #processing
             # csvs_out_test_path = 'uploaded_image.csv'
-            preprocessor.process(per_pose_class_limit=None,detection_threshold=0.1)
+            preprocessor.process(per_pose_class_limit=None,detection_threshold=0.15)
             if len(os.listdir(user_header+'/image_csv'))!=0:
              X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
              y_pred = ygp.model.predict(X_test)
@@ -509,7 +512,7 @@ def detection():
              file_details[0]['pose_prediction']=y_pred_lab
         return jsonify(file_details)
 
-    return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab)
+    return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab, name=session['name'].split()[0])
 
 
 @app.route('/detection/uploadvideo',methods=['POST'])

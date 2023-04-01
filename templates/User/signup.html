@@ -295,11 +295,12 @@ height: 100%;
 <div id="signupModal" class="modal_container">
 
   <div class="modal-content">
-    <form id="modalform" class = "formcontainer" action = "http://localhost:5000/user/validate" method="post">  
+    <form id="modalform" class = "formcontainer">  
   
       <h4> One-time password has been sent to the email id. Please check the email for the verification.</h4>  
              
-      Enter OTP: <input type="text" name="otp" class="mail_field">  
+      Enter OTP: <input type="text" name="otp" class="mail_field">
+      <p class="error error--hidden"></p>  
         
       <input type="submit" value="Submit" class = "submit">  
         

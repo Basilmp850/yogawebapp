@@ -72,7 +72,8 @@ class User:
         session['preprocessor']=preprocessorJSON
         if not verification_status:
          db.User.update_one({"email":user['email']},{"$set":{"verified": True}})
-         return redirect(url_for('hello'))
+         return jsonify(user),200
+        #  return redirect(url_for('hello'))
         return jsonify(user),200
 
     def signup(self):
@@ -102,7 +103,12 @@ class User:
         msg = Message(str(user['random-otp']),sender = 'jonathannebu10@gmail.com', recipients = [user['email']])  
         # msg.body = "Your OTP is: "+str(user["random-otp"])  
         msg.html = render_template('Basic_layouts/verification_mail.html',otp=user['random-otp'])
-        mail.send(msg)  
+        try: 
+         mail.send(msg)  
+        except: 
+            db.User.delete_one(user)
+            return jsonify({"error":"Invalid email address"}), 400
+
         # render_template(url_for('verification'),email=user['email'])
         return jsonify(user),200
 
@@ -117,7 +123,7 @@ class User:
         if user["random-otp"]==int(user_otp):  
          return self.start_session(user)
         else:
-         return "<h3>failure</h3>"
+         return jsonify({"error":"Invalid OTP"}), 400
     
     def login(self):
         user = db.User.find_one({"email": request.form.get('email')})
