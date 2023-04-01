@@ -53,7 +53,7 @@ import custom_modules.google_authentication as google_authentication
 import custom_modules.diseaseprediction as diseasepredictor
 import custom_modules.yogafrombenefits as yogafrombenefits
 
-app.secret_key = "JonOnFire"
+app.secret_key = os.getenv("SECRET_KEY")
 from user_auth import routes
 import user_auth.models as user_authorization_model
 from user_auth.models import User
