@@ -15,7 +15,8 @@ from json import JSONEncoder
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
 app.config["MAIL_PORT"] = 465     
 app.config["MAIL_USERNAME"] = 'jonathannebu10@gmail.com'  
-app.config['MAIL_PASSWORD'] = 'dbyczdyjhldjtdzl'  
+# app.config['MAIL_PASSWORD'] = 'dbyczdyjhldjtdzl'  
+app.config['MAIL_PASSWORD'] = os.getenv("APP_PASS")
 app.config['MAIL_USE_TLS'] = False  
 app.config['MAIL_USE_SSL'] = True  
 
@@ -103,8 +104,9 @@ class User:
         msg = Message(str(user['random-otp']),sender = 'jonathannebu10@gmail.com', recipients = [user['email']])  
         # msg.body = "Your OTP is: "+str(user["random-otp"])  
         msg.html = render_template('Basic_layouts/verification_mail.html',otp=user['random-otp'])
+        mail.send(msg)
         try: 
-         mail.send(msg)  
+          mail.send(msg)  
         except: 
             db.User.delete_one(user)
             return jsonify({"error":"Invalid email address"}), 400
