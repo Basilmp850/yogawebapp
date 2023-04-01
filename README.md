@@ -49,7 +49,7 @@ Recommended Python Version : Python 3.9
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+Consider following the steps mentioned below in order to run the web app locally. If you wish to contribute you may fork the repo and request a pull request.
 
 Steps to run the web app locally
 -----------------------------------
