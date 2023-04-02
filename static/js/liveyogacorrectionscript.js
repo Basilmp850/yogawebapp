@@ -20,4 +20,25 @@ var fetchNow = function() {
     });
 }
 
-// fetchNow()
+var fetchVariables = function(){
+    $.ajax({
+        url:"/getvariables",
+        type:"GET",
+        dataType: "json",
+        success: function(resp){
+            console.log(resp.previous_command); 
+            setTimeout(function(){
+                fetchVariables()
+            },1000);
+        },
+        error: function(resp){
+            console.log(resp.error);
+            setTimeout(function(){
+                fetchVariables()
+            },1000);
+        }
+    });
+}
+
+fetchVariables()
+

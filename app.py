@@ -32,8 +32,8 @@ db=mongoclient.User_authentication
 
 # global images_in_test_folder, images_out_test_folder, csvs_out_test_path, first
 first = True
-IMAGES_ROOT = "static"
-images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
+# IMAGES_ROOT = "static"
+# images_in_test_folder = os.path.join(IMAGES_ROOT, 'uploadedimage')
 # images_out_test_folder = 'uploadedimage_output'
 # csvs_out_test_path = 'static/image_csv/uploaded_image.csv'
 # preprocessor = ygp.MoveNetPreprocessor(
@@ -52,6 +52,7 @@ app = Flask(__name__)
 import custom_modules.google_authentication as google_authentication
 import custom_modules.diseaseprediction as diseasepredictor
 import custom_modules.yogafrombenefits as yogafrombenefits
+from custom_modules.audiocommands import text_to_speech
 
 app.secret_key = os.getenv("SECRET_KEY")
 from user_auth import routes
@@ -68,10 +69,6 @@ def login_required(function):
         
     return wrapper
 
-# app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploaded_video')
-# app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploadedimage/chair')
-
-
 global capture, switch, out, selected_pose
 selected_pose="tree"
 correction=0
@@ -83,10 +80,6 @@ camera = cv2.VideoCapture(0)
 global previous_command, previous_closest_label
 previous_command=""
 previous_closest_label=""
-# frame_width = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))
-# frame_height = int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT))
-# video = cv2.VideoWriter('processed_video.avi', cv2.VideoWriter_fourcc(*'X264'),
-                        # 25, (frame_width, frame_height))
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -94,12 +87,10 @@ def allowed_file(filename):
 predicted_pose = ""
 
 def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame by frame from camera
-    # user_header=session['user_header']
+
     image_loc = user_header+'/uploadedimage/chair'
     global out, capture, correction
     global previous_closest_label, previous_command
-    # print(session['preprocessor'])
-    # preprocessor=jsonpickle.decode(preprocessorJSON)
     previous_closest_label=""
     i=0
     previous_command=""
@@ -108,7 +99,7 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
         detection_threshold = 0
     else:
         detection_threshold=0.15
-    # print("prediction beforehand: "+y_pred_lab)
+
     while True:
 
         success, frame = camera.read() 
@@ -197,8 +188,7 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
 
             previous_closest_label=y_pred_lab if not y_pred_lab=="" else "No Pose Detected"
             predicted_pose=y_pred_lab
-            # cv2.flip(frame,1)
-            # video.write(frame)
+
             if(capture):
                 capture=0
                 now = datetime.datetime.now()
@@ -222,35 +212,20 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
 @app.route('/home/')
 @login_required
 def hello():
-    # global first,images_in_test_folder,images_out_test_folder,csvs_out_test_path,first
-    # app.config['UPLOAD_FOLDER'] = os.path.join(session['user_header'], 'uploadedimage/chair')
-    # if first:  
-    #  global user_header
-    #  user_header=session['user_id']
-    # print(session['preprocessor'])
-    #  if google_authentication.preprocessor:
-    #     user_authorization_model.preprocessor = google_authentication.preprocessor
-    #  app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
-    #  images_in_test_folder = os.path.join(user_header, 'uploadedimage')
-    #  images_out_test_folder = 'uploadedimage_output'
-    #  csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
-    #  preprocessor = ygp.MoveNetPreprocessor(
-    #  images_in_folder=images_in_test_folder,
-    #  images_out_folder=images_out_test_folder,
-    #  csvs_out_path=csvs_out_test_path,
-    #         )
-    #  first=False
     return render_template('index.html',name=session["name"].split()[0])
 
 @app.route('/getvariables')
 @login_required
 def getvariables(methods=['GET']):
     global previous_command, previous_closest_label
+    if switch:
+     text_to_speech(previous_command,'Male')
     variables={
         "previous_command" : previous_command,
         "previous_closest_label" : previous_closest_label
-    }
+     }
     return jsonify(variables)
+
 
 
 @app.route("/")
@@ -259,10 +234,6 @@ def start_page():
        return redirect(url_for('hello'))
     return render_template('User/signup.html')
 
-# @app.route("/<user_id>")
-# def start_page1(user_id=""):
-#     return render_template('User/signup.html', user_id=user_id)
-    
 
 @app.route("/protected_area/")
 @login_required
@@ -303,11 +274,6 @@ def chronic():
 @login_required
 def benefits():
     return render_template('Mainpages/benefits.html',name=session["name"].split()[0])
-
-# @app.route('/liveyogacorrection/')
-# @login_required
-# def liveyogacorrection():
-#     return render_template('Mainpages/liveyogacorrection.html')
 
 
 
@@ -513,23 +479,6 @@ def detection():
         return jsonify(file_details)
 
     return render_template('Mainpages/detection.html', image_uploaded = file_details, pose_prediction=y_pred_lab, name=session['name'].split()[0])
-
-
-@app.route('/detection/uploadvideo',methods=['POST'])
-def upload_video():
-	if 'file' not in request.files:
-		flash('No file part')
-		return redirect(request.url)
-	file = request.files['file']
-	if file.filename == '':
-		flash('No image selected for uploading')
-		return redirect(request.url)
-	else:
-		filename = secure_filename(file.filename)
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		#print('upload_video filename: ' + filename)
-		flash('Video successfully uploaded and displayed below')
-		return render_template('detection.html', filename=filename)
 
 
 
