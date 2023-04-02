@@ -255,7 +255,7 @@ def contactus():
 @login_required
 def video_feed():
     if(switch):
-     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor']),user_header=session['user_header']), mimetype='multipart/x-mixed-replace; boundary=frame')
+     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor']),user_header=session['user_header']),session=session, mimetype='multipart/x-mixed-replace; boundary=frame')
     else: 
         return "No response"
 

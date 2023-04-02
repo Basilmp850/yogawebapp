@@ -83,8 +83,11 @@ class User:
             "name": request.form.get("name"),
             "email":request.form.get("email"),
             "password":request.form.get("psw"),
+            "password-repeat":request.form.get("psw-repeat"),
             "verified": False
         }
+        if user['password']!=user['password-repeat']:
+           return jsonify({"error":"Passwords don't match"}),400
         user['password'] = pbkdf2_sha256.encrypt(user['password'])
         existing_user = db.User.find_one({"email": user['email']})
         if existing_user:
@@ -98,18 +101,17 @@ class User:
         return jsonify({"error":"Signup failed!!"}), 400
     
     def verify(self,user):
-        user["random-otp"] = randint(000000,999999)
+        user["random-otp"] = randint(100000,999999)
         db.User.update_one({"email":user['email']},{"$set":{"random-otp": user["random-otp"]}})
         print(user)
         msg = Message(str(user['random-otp']),sender = 'jonathannebu10@gmail.com', recipients = [user['email']])  
         # msg.body = "Your OTP is: "+str(user["random-otp"])  
         msg.html = render_template('Basic_layouts/verification_mail.html',otp=user['random-otp'])
-        mail.send(msg)
         try: 
-          mail.send(msg)  
+         mail.send(msg)  
         except: 
-            db.User.delete_one(user)
-            return jsonify({"error":"Invalid email address"}), 400
+         db.User.delete_one(user)
+         return jsonify({"error":"Invalid email address"}), 400
 
         # render_template(url_for('verification'),email=user['email'])
         return jsonify(user),200
