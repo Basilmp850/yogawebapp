@@ -107,7 +107,7 @@ footer{
 
 }
 
-.navbuttons a:hover{
+/* .navbuttons a:hover{
     background: white;
     color:black;
     transform: scale(1.8);
@@ -117,7 +117,7 @@ footer{
     background: black;
     color:white;
     transform: scale(1.1);
-}
+} */
 
 main{
     background-image: url("../Assets/pexels-min-an-749114.jpg");

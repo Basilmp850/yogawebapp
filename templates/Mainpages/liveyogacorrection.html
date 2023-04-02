@@ -17,7 +17,7 @@
         <input type="submit" value="Capture" name="click" class="click"/>
     </form>
     <div class="imgcontainer">
-        <img src="{{ url_for('video_feed') }}">
+        <img src="{{ url_for('video_feed') }}" onerror='this.style.display = "none"'>
     </div>
 
     <div class = "detected_pose">
@@ -29,6 +29,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{url_for('static', filename='js/jquery.js')}}"></script>
 <script src="{{url_for('static', filename='js/liveyogacorrectionscript.js')}}"></script>
 {% endblock %}
 
