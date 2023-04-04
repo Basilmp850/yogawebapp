@@ -1,4 +1,5 @@
-from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort,jsonify
+from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort,jsonify, stream_with_context
+from flask.globals import _request_ctx_stack
 from functools import wraps
 import google.auth.transport.requests
 from dotenv import load_dotenv
@@ -13,6 +14,7 @@ from pymongo import MongoClient
 import custom_modules.yogaposturedetection as ygp
 import custom_modules.yogaposecorrection as ypc
 import jsonpickle
+import shutil
 
 load_dotenv()
 file_details = [
@@ -69,45 +71,83 @@ def login_required(function):
         
     return wrapper
 
-global capture, switch, out, selected_pose
-selected_pose="tree"
-correction=0
-capture=0
-switch=1
-camera = cv2.VideoCapture(0)
+# global capture, out, selected_pose
+# selected_pose="tree"
+# correction=0
+# capture=0
+# camera = cv2.VideoCapture(0)
 
 
-global previous_command, previous_closest_label
-previous_command=""
-previous_closest_label=""
+active_user_dictionary={}   # to store user specific variables
+
+class Globalvars:
+    def __init__(self):
+        self.selected_pose="tree"
+        self.correction=0
+        self.camera = cv2.VideoCapture(0)
+        self.previous_command=""
+        self.previous_closest_label=""
+        self.capture=0
+
+    def select_pose(self,pose):
+       self.selected_pose=pose
+    
+    def set_correction(self,b):
+       if b:
+          self.correction=1
+       else:
+          self.correction=0
+
+# user_vars = Globalvars()
+
+
+# global previous_command, previous_closest_label
+# previous_command=""
+# previous_closest_label=""
+
+# def _session_save(session):  # pass flask.session from context
+#     app.session_interface.save_session(app, session, Response())
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in allowed_formats
 predicted_pose = ""
 
-def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame by frame from camera
 
+
+
+
+def gen_frames(preprocessor,user_id,user_header,uploaded_filename=""):  # generate frame by frame from camera
+#    with app.app_context():
     image_loc = user_header+'/uploadedimage/chair'
-    global out, capture, correction
-    global previous_closest_label, previous_command
-    previous_closest_label=""
+    # global out, capture, correction
+    # global previous_closest_label, previous_command
+    user_vars=active_user_dictionary[user_id]
+    user_vars.previous_closest_label=""
+    user_vars.previous_command=""
     i=0
-    previous_command=""
-    print("-=--------------------------------------"+str(correction))
-    if correction:
+    print("---------------------------------------Inside gen_frames --------------------------------------")
+    # print(session)
+    # session['previous_command']=""
+    # session["previous_closest_label"]=""
+    # _session_save(session)
+    print("-----------------------after adding----------------------------------")
+    # print(session)
+
+    # print("-=--------------------------------------"+str(correction))
+    if user_vars.correction:
         detection_threshold = 0
     else:
         detection_threshold=0.15
 
     while True:
 
-        success, frame = camera.read() 
+        success, frame = user_vars.camera.read() 
         if i%60:
-            if not correction:
+            if not user_vars.correction:
              cv2.putText(
                  img = frame,
-                 text = previous_closest_label if not previous_closest_label=="" else "No Pose Detected!!",
+                 text = user_vars.previous_closest_label if not user_vars.previous_closest_label=="" else "No Pose Detected!!",
                  org = (200, 200),
                  fontFace = cv2.FONT_HERSHEY_DUPLEX,
                  fontScale = 1.0,
@@ -117,7 +157,7 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
             else: 
              cv2.putText(
                  img = frame,
-                 text = previous_command if not previous_command=="" else "",
+                 text = user_vars.previous_command if not user_vars.previous_command=="" else "",
                  org = (100, 200),
                  fontFace = cv2.FONT_HERSHEY_DUPLEX,
                  fontScale = 1.0,
@@ -155,16 +195,17 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
              y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
              print(y_pred_lab)
-             if correction:
-              if selected_pose=="tree" :
+             if user_vars.correction:
+              if user_vars.selected_pose=="tree" :
                 command = ypc.tree_pose_correction(df_test)
-              elif selected_pose=="chair":
+              elif user_vars.selected_pose=="chair":
                  command = ypc.chair_pose_correction(df_test)
-              elif selected_pose=="warrior":
+              elif user_vars.selected_pose=="warrior":
                  command=ypc.warrior_pose_correction(df_test)
-              previous_command=command
+              user_vars.previous_command=command
+            #   session["previous_command"]=previous_command
 
-            if not correction:
+            if not user_vars.correction:
              cv2.putText(
                  img = frame,
                  text = y_pred_lab+" "+command if not y_pred_lab=="" else "No Pose Detected!!",
@@ -184,12 +225,13 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
                  color = (0,0,0),
                  thickness = 2
                  )
-            previous_command=command
+            user_vars.previous_command=command
+            # session["previous_command"]=previous_command
 
-            previous_closest_label=y_pred_lab if not y_pred_lab=="" else "No Pose Detected"
+            user_vars.previous_closest_label=y_pred_lab if not y_pred_lab=="" else "No Pose Detected"
             predicted_pose=y_pred_lab
-
-            if(capture):
+            # session["previous_closest_label"]=previous_closest_label
+            if(user_vars.capture):
                 capture=0
                 now = datetime.datetime.now()
                 #to save the image in the pc
@@ -205,24 +247,44 @@ def gen_frames(preprocessor,user_header,uploaded_filename=""):  # generate frame
                 pass
             i=i+1
         else:
-            break
-
-
+            break 
 
 @app.route('/home/')
 @login_required
 def hello():
+    if not session['user_id'] in active_user_dictionary.keys():
+        user_vars=Globalvars()
+        active_user_dictionary[session['user_id']]=user_vars
+    session['switch']=1
+    print("----------------------Before logging in----------------------")
+    print(active_user_dictionary)
     return render_template('index.html',name=session["name"].split()[0])
+
+@app.route("/logout")
+def logout():
+    user_header='static/'+session['user_id']
+    print('-----------------------------------------'+user_header)
+    if os.path.exists(user_header):
+        shutil.rmtree(user_header, ignore_errors=True)
+    if active_user_dictionary[session['user_id']]:
+        del active_user_dictionary[session['user_id']]
+    print("--------Before Logging out ------------------")
+    print(active_user_dictionary)
+    session.clear()
+    return redirect('/')
 
 @app.route('/getvariables')
 @login_required
 def getvariables(methods=['GET']):
-    global previous_command, previous_closest_label
-    if switch:
-     text_to_speech(previous_command,'Male')
+    # global previous_command, previous_closest_label
+    user_vars=active_user_dictionary[session['user_id']]
+    print("----------------------inside getvariables -------------------------")
+    print(session)
+    if session['switch']:
+     text_to_speech(user_vars.previous_command,'Male')
     variables={
-        "previous_command" : previous_command,
-        "previous_closest_label" : previous_closest_label
+        "previous_command" : user_vars.previous_command,
+        "previous_closest_label" : user_vars.previous_closest_label
      }
     return jsonify(variables)
 
@@ -254,15 +316,29 @@ def contactus():
 @app.route('/video_feed/')
 @login_required
 def video_feed():
-    if(switch):
-     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor']),user_header=session['user_header']),session=session, mimetype='multipart/x-mixed-replace; boundary=frame')
-    else: 
+#    def cb1():
+#        session['previous_command']=""
+#        session['previous_closest_label']=""
+    
+#    def cb2(s):
+#        session['previous_command']=s
+
+#    def cb3(s):
+#        session['previous_closest_label']=s  
+  
+
+   if(session['switch']):
+     return Response(gen_frames(preprocessor=jsonpickle.decode(session['preprocessor']),user_id=session['user_id'],user_header=session['user_header']), mimetype='multipart/x-mixed-replace; boundary=frame')
+   else: 
         return "No response"
 
 
 @app.route('/capturepose/')
 @login_required
 def capture_pose():
+    if not session['user_id'] in active_user_dictionary.keys():
+        user_vars=Globalvars()
+        active_user_dictionary[session['user_id']]=user_vars
     return render_template('Mainpages/capturepose.html',pose=predicted_pose,name=session['name'])
 
 @app.route('/chronic/')
@@ -484,21 +560,22 @@ def detection():
 
 @app.route('/requests/',methods=['POST','GET'])
 def tasks():
-    global switch,camera,correction
-    correction = 0
+    # global camera,correction
+    user_vars=active_user_dictionary[session['user_id']]
+    user_vars.set_correction(False)
     if request.method == 'POST':
 
         if request.form.get('click') == 'Capture':
-            global capture
-            capture=1
+            # global capture
+            user_vars.capture=1
         elif  request.form.get('stop') == 'Stop/Start':
-            if(switch==1):
-                switch=0
-                camera.release()
+            if(session['switch']==1):
+                session['switch']=0
+                user_vars.camera.release()
                 cv2.destroyAllWindows()
             else:
-                camera = cv2.VideoCapture(0)
-                switch=1       
+                user_vars.camera = cv2.VideoCapture(0)
+                session['switch']=1       
     elif request.method=='GET':
     
         return render_template('Mainpages/capturepose.html',name=session["name"].split()[0])
@@ -507,26 +584,29 @@ def tasks():
 
 @app.route('/liveyogacorrection/',methods=['POST','GET'])
 def yogacorrectionform():
-    global switch,camera,correction,selected_pose
-    correction = 1
+    # global camera,correction,selected_pose
+    if not session['user_id'] in active_user_dictionary.keys():
+        user_vars=Globalvars()
+        active_user_dictionary[session['user_id']]=user_vars
+    user_vars=active_user_dictionary[session['user_id']]
+    user_vars.set_correction(True)
     if request.method == 'POST':
         if request.form.get('yogaposes_dropdown'):
             selected_pose=request.form.get('yogaposes_dropdown')
-            print(selected_pose)
+            user_vars.select_pose(selected_pose)
         elif request.form.get('click') == 'Capture':
-            global capture
-            capture=1
+            user_vars.capture=1
         elif  request.form.get('stop') == 'Stop/Start':
-            if(switch==1):
-                switch=0
-                camera.release()
+            if(session['switch']==1):
+                session['switch']=0
+                user_vars.camera.release()
                 cv2.destroyAllWindows()
             else:
-                camera = cv2.VideoCapture(0)
-                switch=1       
+                user_vars.camera = cv2.VideoCapture(0)
+                session['switch']=1       
     elif request.method=='GET':
-        return render_template('Mainpages/liveyogacorrection.html',selected=selected_pose.capitalize(),name=session["name"].split()[0])
-    return render_template('Mainpages/liveyogacorrection.html',selected=selected_pose.capitalize(),name=session["name"].split()[0])
+        return render_template('Mainpages/liveyogacorrection.html',selected=user_vars.selected_pose.capitalize(),name=session["name"].split()[0])
+    return render_template('Mainpages/liveyogacorrection.html',selected=user_vars.selected_pose.capitalize(),name=session["name"].split()[0])
 
 if __name__ == '__main__':
     app.run(debug=True)

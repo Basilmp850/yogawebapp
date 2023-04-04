@@ -12,6 +12,7 @@ import json
 import jsonpickle
 from json import JSONEncoder
 
+
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
 app.config["MAIL_PORT"] = 465     
 app.config["MAIL_USERNAME"] = 'jonathannebu10@gmail.com'  
