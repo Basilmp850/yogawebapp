@@ -206,25 +206,87 @@ def warrior_pose_correction(df):
     print(right_shoulder_angle)
     print(left_shoulder_angle)
 
-    if right_hip_angle>110:
+    if right_hip_angle>130:
         command = "Lean your body forward"
-    elif left_hip_angle<140:
+    elif left_hip_angle<120:
         command = "Straighten your left leg"
-    elif left_hip_angle>180:
+    elif left_hip_angle>185:
         command = "Lower your left leg"
-    elif right_hip_angle<55:
+    elif right_hip_angle<40:
         command = "Straighten your right leg"
-    elif left_knee_angle<150:
+    elif left_knee_angle<120:
         command = "Straighten your left knee"
-    elif right_knee_angle<150:
+    elif right_knee_angle<120:
         command = "Straighten your right knee"
-    elif right_shoulder_angle<160 or left_shoulder_angle<160:
+    elif right_shoulder_angle<120 or left_shoulder_angle<120:
         command = "Straighten your arms"
-    elif right_elbow_angle<170 or left_elbow_angle<170 or right_elbow_angle>190 or left_elbow_angle>190:
+    elif right_elbow_angle<150 or left_elbow_angle<150 or right_elbow_angle>190 or left_elbow_angle>190:
         command = "Straighten elbows"
     else:
         command="Correct Warrior Pose!!"
     return command
+
+
+def cobra_pose_correction(df):
+    right_knee_angle = standardize(find_angle((df['RIGHT_HIP_x'],df['RIGHT_HIP_y'],0),(df['RIGHT_KNEE_x'], df['RIGHT_KNEE_y'],0),(df['RIGHT_ANKLE_x'],df['RIGHT_ANKLE_y'],0)))
+    left_knee_angle = standardize(find_angle((df['LEFT_HIP_x'],df['LEFT_HIP_y'],0),(df['LEFT_KNEE_x'], df['LEFT_KNEE_y'],0),(df['LEFT_ANKLE_x'],df['LEFT_ANKLE_y'],0)))
+    left_hip_angle = standardize(find_angle((df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0),(df['LEFT_HIP_x'], df['LEFT_HIP_y'],0),(df['LEFT_KNEE_x'],df['LEFT_KNEE_y'],0)))
+    right_hip_angle = standardize(find_angle((df['RIGHT_KNEE_x'],df['RIGHT_KNEE_y'],0),(df['RIGHT_HIP_x'], df['RIGHT_HIP_y'],0),(df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0)))
+    right_shoulder_angle = standardize(find_angle((df['RIGHT_ELBOW_x'],df['RIGHT_ELBOW_y'],0),(df['RIGHT_SHOULDER_x'], df['RIGHT_SHOULDER_y'],0),(df['RIGHT_HIP_x'],df['RIGHT_HIP_y'],0)))
+    left_shoulder_angle = standardize(find_angle((df['LEFT_ELBOW_x'],df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'], df['LEFT_SHOULDER_y'],0),(df['LEFT_HIP_x'],df['LEFT_HIP_y'],0)))
+    right_elbow_angle = standardize(find_angle((df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0),(df['RIGHT_ELBOW_x'], df['RIGHT_ELBOW_y'],0),(df['RIGHT_WRIST_x'],df['RIGHT_WRIST_y'],0)))
+    left_elbow_angle = standardize(find_angle((df['LEFT_WRIST_x'],df['LEFT_WRIST_y'],0),(df['LEFT_ELBOW_x'], df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0)))   
+    angle_with_ground = standardize(find_angle((df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0),(df['RIGHT_WRIST_x'],df['RIGHT_WRIST_y'],0),(df['RIGHT_HIP_x'],df['RIGHT_HIP_y'],0)))
+    print(abs(df['RIGHT_SHOULDER_y'][0]-df['RIGHT_HIP_y'][0]))
+    print(right_knee_angle)
+    print(left_knee_angle)
+
+    print(right_hip_angle)
+    print(left_hip_angle)
+
+    print(right_shoulder_angle)
+    print(left_shoulder_angle)
+    print(angle_with_ground)
+    if abs(df['RIGHT_SHOULDER_y'][0]-df['RIGHT_HIP_y'][0])>100:
+        command = "Please lay down on your stomach"
+    elif right_hip_angle>150 or left_hip_angle>150:
+        command = "Please bend your body backwards"
+    elif right_hip_angle<110 or left_hip_angle<110: 
+        command = "Please lower your body slightly"
+    elif right_knee_angle<160 or left_knee_angle<160:
+        command="Please straighten your legs"
+    elif right_shoulder_angle<20 or left_shoulder_angle<20 or right_shoulder_angle>60 or left_shoulder_angle>60:
+        command = "Please straighten your arms perpendicular to the ground"
+    # elif angle_with_ground<75 or angle_with_ground>98:
+    #     command="Please align your arms perpendicular to the ground"
+    else:
+        command = "Correct Cobra Pose!!"
+    return command
+
+def dog_pose_correction(df):
+    right_knee_angle = standardize(find_angle((df['RIGHT_HIP_x'],df['RIGHT_HIP_y'],0),(df['RIGHT_KNEE_x'], df['RIGHT_KNEE_y'],0),(df['RIGHT_ANKLE_x'],df['RIGHT_ANKLE_y'],0)))
+    left_knee_angle = standardize(find_angle((df['LEFT_HIP_x'],df['LEFT_HIP_y'],0),(df['LEFT_KNEE_x'], df['LEFT_KNEE_y'],0),(df['LEFT_ANKLE_x'],df['LEFT_ANKLE_y'],0)))
+    left_hip_angle = standardize(find_angle((df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0),(df['LEFT_HIP_x'], df['LEFT_HIP_y'],0),(df['LEFT_KNEE_x'],df['LEFT_KNEE_y'],0)))
+    right_hip_angle = standardize(find_angle((df['RIGHT_KNEE_x'],df['RIGHT_KNEE_y'],0),(df['RIGHT_HIP_x'], df['RIGHT_HIP_y'],0),(df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0)))    
+    right_shoulder_angle = standardize(find_angle((df['RIGHT_ELBOW_x'],df['RIGHT_ELBOW_y'],0),(df['RIGHT_SHOULDER_x'], df['RIGHT_SHOULDER_y'],0),(df['RIGHT_HIP_x'],df['RIGHT_HIP_y'],0)))
+    left_shoulder_angle = standardize(find_angle((df['LEFT_ELBOW_x'],df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'], df['LEFT_SHOULDER_y'],0),(df['LEFT_HIP_x'],df['LEFT_HIP_y'],0)))
+   
+    if abs(df['RIGHT_SHOULDER_y'][0]-df['RIGHT_HIP_y'][0])>100:
+        command = "Please place your hands on the ground"
+    elif right_hip_angle>120 or left_hip_angle>120:
+        command="Lower your body more"
+    elif right_hip_angle<40 or left_hip_angle<40:
+        command = "Run your legs back along the ground"
+    elif right_knee_angle<155 or left_knee_angle<155:
+        command = "Straighten your legs"
+    elif right_shoulder_angle<150 or left_shoulder_angle<150:
+        command = "Straighten your arms"
+    else:
+        command = "Correct dog pose!!"
+
+    return command
+
+
 
 # print(chair_pose_correction())
 # if left_elbow_angle < 165:
