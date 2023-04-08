@@ -1,4 +1,4 @@
-from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort,jsonify, stream_with_context
+from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort,jsonify
 from flask.globals import _request_ctx_stack
 from functools import wraps
 import google.auth.transport.requests
@@ -15,6 +15,9 @@ import custom_modules.yogaposturedetection as ygp
 import custom_modules.yogaposecorrection as ypc
 import jsonpickle
 import shutil
+import threading
+
+
 
 load_dotenv()
 file_details = [
@@ -30,7 +33,8 @@ db=mongoclient.User_authentication
 # global user_header
 # user_header = ""
 
-
+#for the purpose of isolating updation of active_user_dictionary
+sem = threading.Semaphore()
 
 # global images_in_test_folder, images_out_test_folder, csvs_out_test_path, first
 first = True
@@ -202,6 +206,10 @@ def gen_frames(preprocessor,user_id,user_header,uploaded_filename=""):  # genera
                  command = ypc.chair_pose_correction(df_test)
               elif user_vars.selected_pose=="warrior":
                  command=ypc.warrior_pose_correction(df_test)
+              elif user_vars.selected_pose=="cobra":
+                 command=ypc.cobra_pose_correction(df_test)
+              elif user_vars.selected_pose=="dog":
+                 command = ypc.dog_pose_correction(df_test)
               user_vars.previous_command=command
             #   session["previous_command"]=previous_command
 
@@ -252,9 +260,11 @@ def gen_frames(preprocessor,user_id,user_header,uploaded_filename=""):  # genera
 @app.route('/home/')
 @login_required
 def hello():
+    sem.acquire()
     if not session['user_id'] in active_user_dictionary.keys():
         user_vars=Globalvars()
         active_user_dictionary[session['user_id']]=user_vars
+    sem.release()
     session['switch']=1
     print("----------------------Before logging in----------------------")
     print(active_user_dictionary)
@@ -280,8 +290,12 @@ def getvariables(methods=['GET']):
     user_vars=active_user_dictionary[session['user_id']]
     print("----------------------inside getvariables -------------------------")
     print(session)
-    if session['switch']:
+    if session['switch'] and not (session['previous_speech_command']==user_vars.previous_command and session['count']<4):
      text_to_speech(user_vars.previous_command,'Male')
+     session['previous_speech_command']=user_vars.previous_command
+     session['count']=0
+    else:
+       session['count']=session['count']+1
     variables={
         "previous_command" : user_vars.previous_command,
         "previous_closest_label" : user_vars.previous_closest_label
@@ -336,9 +350,11 @@ def video_feed():
 @app.route('/capturepose/')
 @login_required
 def capture_pose():
+    sem.acquire()
     if not session['user_id'] in active_user_dictionary.keys():
         user_vars=Globalvars()
         active_user_dictionary[session['user_id']]=user_vars
+    sem.release()
     return render_template('Mainpages/capturepose.html',pose=predicted_pose,name=session['name'])
 
 @app.route('/chronic/')
@@ -585,9 +601,13 @@ def tasks():
 @app.route('/liveyogacorrection/',methods=['POST','GET'])
 def yogacorrectionform():
     # global camera,correction,selected_pose
+    sem.acquire()
     if not session['user_id'] in active_user_dictionary.keys():
         user_vars=Globalvars()
         active_user_dictionary[session['user_id']]=user_vars
+    sem.release()
+    session['previous_speech_command']="Welcome to yoga correction"
+    session['count']=0
     user_vars=active_user_dictionary[session['user_id']]
     user_vars.set_correction(True)
     if request.method == 'POST':
