@@ -56,7 +56,7 @@
         console.log("Prediction: "+data);
         detection_message=data;
         ctx.font = "50px Arial";
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "black";
     
         ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
     });
@@ -66,9 +66,7 @@
         type: 'GET',
         dataType: 'json',
         success: function(data) {
-          // Parse the JSON response and display the session data
           session_data = JSON.stringify(data);
-          console.log(session_data);
         }
       });
 
@@ -113,7 +111,7 @@
         ctx.drawImage(video,0,0);
         var data1 = document.getElementById("canvasOutput").toDataURL(type);
         ctx.font = "40px Arial";
-        ctx.fillStyle = "red";    
+        ctx.fillStyle = "black";    
         ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
         data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
         var data={

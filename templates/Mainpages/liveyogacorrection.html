@@ -65,10 +65,10 @@
     socket.on('message',function(data){
         console.log("Prediction: "+data);
         detection_message=data;
-        ctx.font = "50px Arial";
-        ctx.fillStyle = "red";
+        ctx.font = "35px Arial";
+        ctx.fillStyle = "black";
     
-        ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
+        ctx.fillText(detection_message,25, canvas.height/5);
     });
     var session_data=""
     $.ajax({
@@ -124,9 +124,9 @@
   
         ctx.drawImage(video,0,0);
         var data1 = document.getElementById("canvasOutput").toDataURL(type);
-        ctx.font = "40px Arial";
-        ctx.fillStyle = "red";    
-        ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
+        ctx.font = "35px Arial";
+        ctx.fillStyle = "black";    
+        ctx.fillText(detection_message,25, canvas.height/5);
         data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
         var data={
             image_data: data1,

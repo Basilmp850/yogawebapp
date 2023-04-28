@@ -273,7 +273,6 @@ def socket_detection(data):
     stringData=""
     # sbuf.write(data_image)
     session = json.loads(data['session_data'])
-    print(session)
     user_header = session['user_header']
     image_loc = user_header+'/uploadedimage/chair'
     preprocessor=jsonpickle.decode(session['preprocessor'])
@@ -281,33 +280,36 @@ def socket_detection(data):
     y_pred_lab=""
     # decode and convert into image
     b = io.BytesIO(base64.b64decode(data['image_data']))
-    pimg = Image.open(b)
+    try:
+     pimg = Image.open(b)
+     frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
 
     ## converting RGB to BGR, as opencv standards
-    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
+
 
     # Process the image frame
 
     # print(session)
 
     
-    for file in os.listdir(user_header+'/uploadedimage/chair'):
+     for file in os.listdir(user_header+'/uploadedimage/chair'):
        os.remove(user_header+'/uploadedimage/chair/' + file)
             
-    cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
-    csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
-    for file in os.listdir(user_header+'/image_csv'):
+     cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+     csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+     for file in os.listdir(user_header+'/image_csv'):
         os.remove(user_header+'/image_csv/' + file)
 
-    preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
-    if len(os.listdir(user_header+'/image_csv'))!=0:
+     preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
+     if len(os.listdir(user_header+'/image_csv'))!=0:
              X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
              y_pred = ygp.model.predict(X_test)
              y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
-
+    except: 
+     print("Not able to open image")
     emit('message',y_pred_lab if not y_pred_lab=="" else "No Pose detected!!")
     # # frame = imutils.resize(frame, width=700)
     # frame = cv2.flip(frame, 1)
@@ -329,7 +331,6 @@ def socket_correction(data):
     # sbuf.write(data_image)
     command=""
     session = json.loads(data['session_data'])
-    print(session)
     user_header = session['user_header']
     image_loc = user_header+'/uploadedimage/chair'
     preprocessor=jsonpickle.decode(session['preprocessor'])
@@ -338,26 +339,27 @@ def socket_correction(data):
     y_pred_lab=""
     # decode and convert into image
     b = io.BytesIO(base64.b64decode(data['image_data']))
-    pimg = Image.open(b)
+    try:
+     pimg = Image.open(b)
 
     ## converting RGB to BGR, as opencv standards
-    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
+     frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
 
     # Process the image frame
 
     # print(session)
 
     
-    for file in os.listdir(user_header+'/uploadedimage/chair'):
+     for file in os.listdir(user_header+'/uploadedimage/chair'):
        os.remove(user_header+'/uploadedimage/chair/' + file)
             
-    cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
-    csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
-    for file in os.listdir(user_header+'/image_csv'):
+     cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+     csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+     for file in os.listdir(user_header+'/image_csv'):
         os.remove(user_header+'/image_csv/' + file)
 
-    preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
-    if len(os.listdir(user_header+'/image_csv'))!=0:
+     preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
+     if len(os.listdir(user_header+'/image_csv'))!=0:
              X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
@@ -375,7 +377,8 @@ def socket_correction(data):
                  command=ypc.cobra_pose_correction(df_test)
              elif selected_pose=="dog":
                  command = ypc.dog_pose_correction(df_test)
-    print("----------Command;---------------------"+command)
+    except: 
+     print("Not able to open image!!")
     emit('message',command if not command=="" else "Get ready!!")
 
 
