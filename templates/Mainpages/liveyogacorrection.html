@@ -40,7 +40,7 @@
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 <!-- <script src="{{url_for('static', filename='js/liveyogacorrectionscript.js')}}"></script> -->
 <script>
-    var socket = io.connect('http://localhost:5000/');
+    var socket = io.connect();
     var cameraswitch=0;
     const startstop=document.getElementById("cameraswitch");
     const video = document.querySelector("#videoElement");
