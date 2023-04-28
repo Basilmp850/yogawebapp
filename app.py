@@ -1,5 +1,6 @@
 from flask import Flask, render_template,url_for,Response,request, flash, redirect, session, abort,jsonify
-from flask.globals import _request_ctx_stack
+# from flask.globals import _request_ctx_stack
+from flask_socketio import SocketIO, emit
 from functools import wraps
 import google.auth.transport.requests
 from dotenv import load_dotenv
@@ -16,7 +17,9 @@ import custom_modules.yogaposecorrection as ypc
 import jsonpickle
 import shutil
 import threading
-
+import json
+import io, base64, imutils
+from PIL import Image
 
 
 load_dotenv()
@@ -53,6 +56,8 @@ first = True
 allowed_formats = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','mp4'])
 y_pred_label=""
 app = Flask(__name__)
+socketio = SocketIO(app)
+
 #routes
 
 import custom_modules.google_authentication as google_authentication
@@ -257,6 +262,123 @@ def gen_frames(preprocessor,user_id,user_header,uploaded_filename=""):  # genera
         else:
             break 
 
+@app.route('/get_session_data')
+def get_session_data():
+    session_data = dict(session)
+    return jsonify(session_data)
+
+@socketio.on('detection')
+def socket_detection(data):
+    # sbuf = StringIO()
+    stringData=""
+    # sbuf.write(data_image)
+    session = json.loads(data['session_data'])
+    print(session)
+    user_header = session['user_header']
+    image_loc = user_header+'/uploadedimage/chair'
+    preprocessor=jsonpickle.decode(session['preprocessor'])
+    detection_threshold=0.15
+    y_pred_lab=""
+    # decode and convert into image
+    b = io.BytesIO(base64.b64decode(data['image_data']))
+    pimg = Image.open(b)
+
+    ## converting RGB to BGR, as opencv standards
+    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
+
+    # Process the image frame
+
+    # print(session)
+
+    
+    for file in os.listdir(user_header+'/uploadedimage/chair'):
+       os.remove(user_header+'/uploadedimage/chair/' + file)
+            
+    cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+    csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+    for file in os.listdir(user_header+'/image_csv'):
+        os.remove(user_header+'/image_csv/' + file)
+
+    preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
+    if len(os.listdir(user_header+'/image_csv'))!=0:
+             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+             print('LEFT HIP X')
+             print(df_test['LEFT_HIP_x'][0])
+             y_pred = ygp.model.predict(X_test)
+             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_lab = y_pred_label[0]
+
+    emit('message',y_pred_lab if not y_pred_lab=="" else "No Pose detected!!")
+    # # frame = imutils.resize(frame, width=700)
+    # frame = cv2.flip(frame, 1)
+    # imgencode = cv2.imencode('.jpeg', frame)[1]
+
+    # base64 encode
+    # stringData = base64.b64encode(imgencode).decode('utf-8')
+    # b64_src = 'data:image/jpeg;base64,' 
+    # # data:image/jpeg;base64,/9j/4AAQSkZJRgA
+    # stringData = b64_src + stringData
+    # print(stringData+'\n')
+    # # emit the frame back
+    # emit('response_back', stringData)
+
+@socketio.on('correction')
+def socket_correction(data):
+    # sbuf = StringIO()
+    stringData=""
+    # sbuf.write(data_image)
+    command=""
+    session = json.loads(data['session_data'])
+    print(session)
+    user_header = session['user_header']
+    image_loc = user_header+'/uploadedimage/chair'
+    preprocessor=jsonpickle.decode(session['preprocessor'])
+    selected_pose = data['selected_pose']
+    detection_threshold=0
+    y_pred_lab=""
+    # decode and convert into image
+    b = io.BytesIO(base64.b64decode(data['image_data']))
+    pimg = Image.open(b)
+
+    ## converting RGB to BGR, as opencv standards
+    frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
+
+    # Process the image frame
+
+    # print(session)
+
+    
+    for file in os.listdir(user_header+'/uploadedimage/chair'):
+       os.remove(user_header+'/uploadedimage/chair/' + file)
+            
+    cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+    csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
+    for file in os.listdir(user_header+'/image_csv'):
+        os.remove(user_header+'/image_csv/' + file)
+
+    preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
+    if len(os.listdir(user_header+'/image_csv'))!=0:
+             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+             print('LEFT HIP X')
+             print(df_test['LEFT_HIP_x'][0])
+             y_pred = ygp.model.predict(X_test)
+             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_lab = y_pred_label[0]
+
+             if selected_pose=="tree" :
+                command = ypc.tree_pose_correction(df_test)
+             elif selected_pose=="chair":
+                 command = ypc.chair_pose_correction(df_test)
+             elif selected_pose=="warrior":
+                 command=ypc.warrior_pose_correction(df_test)
+             elif selected_pose=="cobra":
+                 command=ypc.cobra_pose_correction(df_test)
+             elif selected_pose=="dog":
+                 command = ypc.dog_pose_correction(df_test)
+    print("----------Command;---------------------"+command)
+    emit('message',command if not command=="" else "Get ready!!")
+
+
 @app.route('/home/')
 @login_required
 def hello():
@@ -264,6 +386,8 @@ def hello():
     if not session['user_id'] in active_user_dictionary.keys():
         user_vars=Globalvars()
         active_user_dictionary[session['user_id']]=user_vars
+        # user_vars.preprocessor=session['preprocessor']
+        # user_vars.user_id=session['user_id']
     sem.release()
     session['switch']=1
     print("----------------------Before logging in----------------------")
@@ -355,7 +479,7 @@ def capture_pose():
         user_vars=Globalvars()
         active_user_dictionary[session['user_id']]=user_vars
     sem.release()
-    return render_template('Mainpages/capturepose.html',pose=predicted_pose,name=session['name'])
+    return render_template('Mainpages/capturepose.html',pose=predicted_pose,name=session["name"].split()[0])
 
 @app.route('/chronic/')
 @login_required

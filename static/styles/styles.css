@@ -106,7 +106,11 @@ footer{
     transition: all 0.3s ease-in-out;
 
 }
-
+#canvasOutput{
+    width: 700px;
+    height: 500px;
+    display:none
+}
 /* .navbuttons a:hover{
     background: white;
     color:black;
