@@ -110,13 +110,6 @@ def tree_pose_correction(df):
     left_elbow_angle = (find_angle((df['LEFT_WRIST_x'],df['LEFT_WRIST_y'],0),(df['LEFT_ELBOW_x'], df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0)))
     left_knee_angle = standardize(find_angle((df['LEFT_HIP_x'],df['LEFT_HIP_y'],0),(df['LEFT_KNEE_x'], df['LEFT_KNEE_y'],0),(df['LEFT_ANKLE_x'],df['LEFT_ANKLE_y'],0)))
     
-    print(left_hip_angle)
-    print(right_knee_angle)
-    print(left_knee_angle)
-    print(right_elbow_angle)
-    print(right_hip_angle)
-
-    print(left_elbow_angle)
     
 
     if left_elbow_angle>61:
@@ -153,17 +146,7 @@ def chair_pose_correction(df):
     left_shoulder_angle = standardize(find_angle((df['LEFT_ELBOW_x'],df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'], df['LEFT_SHOULDER_y'],0),(df['LEFT_HIP_x'],df['LEFT_HIP_y'],0)))
     right_elbow_angle = standardize(find_angle((df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0),(df['RIGHT_ELBOW_x'], df['RIGHT_ELBOW_y'],0),(df['RIGHT_WRIST_x'],df['RIGHT_WRIST_y'],0)))
     left_elbow_angle = standardize(find_angle((df['LEFT_WRIST_x'],df['LEFT_WRIST_y'],0),(df['LEFT_ELBOW_x'], df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0)))
-    print(left_hip_angle)
-    print(right_hip_angle)
-    
-    print(left_knee_angle)
-    print(right_knee_angle)
 
-    print(right_elbow_angle)
-
-    print(left_elbow_angle)
-    print(left_shoulder_angle)
-    print(right_shoulder_angle)
     # print(df['LEFT_SHOULDER_x'][0])
     if abs(df['LEFT_SHOULDER_x'][0] - df['RIGHT_SHOULDER_x'][0]) > 30:
         command = "Please turn to your right or your left"
@@ -197,14 +180,6 @@ def warrior_pose_correction(df):
     right_elbow_angle = standardize(find_angle((df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0),(df['RIGHT_ELBOW_x'], df['RIGHT_ELBOW_y'],0),(df['RIGHT_WRIST_x'],df['RIGHT_WRIST_y'],0)))
     left_elbow_angle = standardize(find_angle((df['LEFT_WRIST_x'],df['LEFT_WRIST_y'],0),(df['LEFT_ELBOW_x'], df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0)))
 
-    print(right_knee_angle)
-    print(left_knee_angle)
-
-    print(right_hip_angle)
-    print(left_hip_angle)
-
-    print(right_shoulder_angle)
-    print(left_shoulder_angle)
 
     if right_hip_angle>130:
         command = "Lean your body forward"
@@ -237,16 +212,8 @@ def cobra_pose_correction(df):
     right_elbow_angle = standardize(find_angle((df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0),(df['RIGHT_ELBOW_x'], df['RIGHT_ELBOW_y'],0),(df['RIGHT_WRIST_x'],df['RIGHT_WRIST_y'],0)))
     left_elbow_angle = standardize(find_angle((df['LEFT_WRIST_x'],df['LEFT_WRIST_y'],0),(df['LEFT_ELBOW_x'], df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0)))   
     angle_with_ground = standardize(find_angle((df['RIGHT_SHOULDER_x'],df['RIGHT_SHOULDER_y'],0),(df['RIGHT_WRIST_x'],df['RIGHT_WRIST_y'],0),(df['RIGHT_HIP_x'],df['RIGHT_HIP_y'],0)))
-    print(abs(df['RIGHT_SHOULDER_y'][0]-df['RIGHT_HIP_y'][0]))
-    print(right_knee_angle)
-    print(left_knee_angle)
 
-    print(right_hip_angle)
-    print(left_hip_angle)
 
-    print(right_shoulder_angle)
-    print(left_shoulder_angle)
-    print(angle_with_ground)
     if abs(df['RIGHT_SHOULDER_y'][0]-df['RIGHT_HIP_y'][0])>100:
         command = "Please lay down on your stomach"
     elif right_hip_angle>150 or left_hip_angle>150:

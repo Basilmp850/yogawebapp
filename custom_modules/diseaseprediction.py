@@ -24,6 +24,7 @@ final_nb_model = pickle.load(open('./pickled_files/nb_model.pkl', 'rb'))
 encoder = pickle.load(open('./pickled_files/encoder.pkl', 'rb')) 
 yogarecommendation = pickle.load(open('./pickled_files/yogarecommendationdictionary.pkl','rb'))
 
+
 #testing
 # encoder = LabelEncoder()
 # data["prognosis"] = encoder.fit_transform(data["prognosis"])
@@ -111,6 +112,8 @@ def chronicpost():
     #    term = (','+requestdata['symptom'+str(i)]) if len(requestdata['symptom'+str(i)])!=0 else ''
      print(prediction_attributes)
      prediction = predictDisease(prediction_attributes)["final_prediction"]
+     if prediction=="Dimorphic hemmorhoids(piles)":
+          prediction="Dimorphic hemorrhoids (piles)"
      symptoms = {    
           "symptom1": request.form.get("1"),
           "symptom2": request.form.get("2"),

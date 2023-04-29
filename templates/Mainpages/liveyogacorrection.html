@@ -22,13 +22,8 @@
         <canvas id="canvasOutput" width="700" height="500"></canvas> 
 
     </div>
-    <!-- <div class="imgcontainer">
-        <img src="{{ url_for('video_feed') }}" onerror='this.style.display = "none"'>
-    </div> -->
 
-    <!-- <div class = "detected_pose">
-        <!-- Pose Detected : {{pose}}    -->
-    </div> -->
+
 
 </div>
 
@@ -117,7 +112,7 @@
     var i = 1;
     setInterval(() => {
         cap.read(src);
-        
+        selected_pose = dropdown.value;
         var type = "image/jpeg"
         canvas.width=video.videoWidth;
         canvas.height=video.videoHeight;
@@ -133,7 +128,7 @@
             session_data: session_data,
             selected_pose: selected_pose
         };
-        if(i%60 == 0) 
+        if(i%60 == 0 && cameraswitch) 
         {
          socket.emit('correction', data);
          i=1;

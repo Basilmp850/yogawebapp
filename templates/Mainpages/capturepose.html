@@ -19,9 +19,7 @@
         <img id="processed-image">
     </div>
 <!--     
-    <div class="imgcontainer">
-        <img src="{{ url_for('video_feed') }}" onerror='this.style.display = "none"'>
-    </div> -->
+
 
     <!-- <div class = "detected_pose">
         Pose Detected : {{pose}}   
@@ -55,7 +53,7 @@
     socket.on('message',function(data){
         console.log("Prediction: "+data);
         detection_message=data;
-        ctx.font = "50px Arial";
+        ctx.font = "40px Arial";
         ctx.fillStyle = "black";
     
         ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
