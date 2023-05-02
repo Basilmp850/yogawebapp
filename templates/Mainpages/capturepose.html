@@ -21,7 +21,7 @@
 <!--     
 
 
-    <!-- <div class = "detected_pose">
+  <div class = "detected_pose">
         Pose Detected : {{pose}}   
     </div> -->
 
@@ -33,7 +33,7 @@
 <script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 <script>
-    var socket = io.connect();
+    var socket = io.connect('', { transports: ['websocket','polling'] });
     var cameraswitch=0;
     const startstop=document.getElementById("cameraswitch");
     const video = document.querySelector("#videoElement");
@@ -78,6 +78,27 @@
     const FPS = 60;
 
 
+    var fetchPrediction = function(){
+        $.ajax({
+            url:"/detection_ajax",
+            type:"POST",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function(resp){
+                console.log(resp.prediction); 
+                setTimeout(function(){
+                    fetchVariables()
+                },1000);
+            },
+            error: function(resp){
+                console.log(resp.error);
+                setTimeout(function(){
+                    fetchVariables()
+                },1000);
+            }
+        });
+    }
+    firsttime=1;
     switchbutton.addEventListener('click',function(event){
         event.preventDefault();
     if(!cameraswitch)
@@ -99,6 +120,7 @@
     }
 
     var i = 1;
+    if(firsttime)
     setInterval(() => {
         cap.read(src);
         
@@ -107,22 +129,33 @@
         canvas.height=video.videoHeight;
   
         ctx.drawImage(video,0,0);
-        var data1 = document.getElementById("canvasOutput").toDataURL(type);
+        
         ctx.font = "40px Arial";
         ctx.fillStyle = "black";    
         ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
-        data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
-        var data={
-            image_data: data1,
-            session_data: session_data
-        };
-        if(i%60 == 0) 
+
+        var dataURI = document.getElementById("canvasOutput").toDataURL(type);
+        var base64Data = dataURI.split(',')[1];
+        var binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+       if(i%60 == 0 && cameraswitch) 
         {
+            var blob = new Blob([binaryData], { type: 'image/jpeg' });
+
+            //data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
+    
+            //console.log(data1)
+            console.log(blob)
+    
+            var data={
+                image_data: blob,
+                session_data: session_data
+            };
          socket.emit('detection', data);
          i=1;
         }
         i=i+1;
-
+        firsttime=0;
     }, 1000/FPS);
 
 }

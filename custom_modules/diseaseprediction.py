@@ -1,5 +1,5 @@
-from flask import request, jsonify
-from app import app
+from flask import request, jsonify, Blueprint
+# from app import app
 
 symptoms = {
         "symptom1" : "",
@@ -8,6 +8,7 @@ symptoms = {
         "prediction": ""
     }
 
+disease_prediction = Blueprint('disease_prediction', __name__)
 
 import pickle 
 from scipy.stats import mode
@@ -79,7 +80,7 @@ def predictDisease(symptoms):
 	}
 	return predictions
 
-@app.route('/chronicpost',methods=['POST'])
+@disease_prediction.route('/chronicpost',methods=['POST'])
 def chronicpost():
     print("1")
     prediction_attributes=""

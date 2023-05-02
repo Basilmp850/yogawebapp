@@ -33,7 +33,6 @@
 <script src="{{ url_for('static',filename='js/opencv.js') }}"></script>
 <script src="{{url_for('static', filename='js/jquery.js')}}"></script>
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
-<!-- <script src="{{url_for('static', filename='js/liveyogacorrectionscript.js')}}"></script> -->
 <script>
     var socket = io.connect();
     var cameraswitch=0;
@@ -86,7 +85,7 @@
 
     const FPS = 60;
 
-
+      firsttime=1
     switchbutton.addEventListener('click',function(event){
         event.preventDefault();
     if(!cameraswitch)
@@ -110,6 +109,7 @@
     }
 
     var i = 1;
+    if(firsttime)
     setInterval(() => {
         cap.read(src);
         selected_pose = dropdown.value;
