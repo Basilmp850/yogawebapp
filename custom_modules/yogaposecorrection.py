@@ -5,17 +5,7 @@ from math import atan2
 
 # df = pd.read_csv('../samplecsv.csv')
 def calculateAngle(landmark1, landmark2, landmark3):
-    '''
-    This function calculates angle between three different landmarks.
-    Args:
-        landmark1: The first landmark containing the x,y and z coordinates.
-        landmark2: The second landmark containing the x,y and z coordinates.
-        landmark3: The third landmark containing the x,y and z coordinates.
-    Returns:
-        angle: The calculated angle between the three landmarks.
- 
-    '''
- 
+
     # Get the required landmarks coordinates.
     x1, y1, _ = landmark1
     x2, y2, _ = landmark2
@@ -148,7 +138,7 @@ def chair_pose_correction(df):
     left_elbow_angle = standardize(find_angle((df['LEFT_WRIST_x'],df['LEFT_WRIST_y'],0),(df['LEFT_ELBOW_x'], df['LEFT_ELBOW_y'],0),(df['LEFT_SHOULDER_x'],df['LEFT_SHOULDER_y'],0)))
 
     # print(df['LEFT_SHOULDER_x'][0])
-    if abs(df['LEFT_SHOULDER_x'][0] - df['RIGHT_SHOULDER_x'][0]) > 30:
+    if abs(df['LEFT_SHOULDER_x'][0] - df['RIGHT_SHOULDER_x'][0]) > 40:
         command = "Please turn to your right or your left"
     elif right_knee_angle>125 or left_knee_angle>125:
         command = "Please bend your knees"
@@ -165,7 +155,7 @@ def chair_pose_correction(df):
     elif left_elbow_angle<170 or right_elbow_angle>190 or left_elbow_angle>190:
         command = "Straighten elbows"
     else:
-        command = "Chair pose correct!!"
+        command = "Correct Chair pose !!"
     
 
     return command

@@ -4,7 +4,7 @@
 <div class="containerofvideocapture">
 
     <form method="post" action="{{ url_for('yogacorrectionform') }}">
-        <label for="lang">Select a pose:</label>
+        <label for="lang" style="color: #091529;font-weight: 1000;">Select a pose:</label>
         <select name="yogaposes_dropdown" id="pose_menu">
         <!-- <option value="" selected disabled hidden>{{selected}}</option> -->
         <option value="chair">Chair</option>
@@ -13,7 +13,7 @@
         <option value="tree" selected>Tree</option>
         <option value="warrior">Warrior</option>
         </select>
-        <input type="submit" id="cameraswitch" value="Stop/Start" name="stop" class="stop"/>
+        <input type="submit" id="cameraswitch" value="Stop/Start" name="stop" class="btn btn-primary btn-lg"/>
         <!-- <input type="submit" value="Capture" name="click" class="click"/> -->
     </form>
     <div id="newcontainer">
@@ -34,7 +34,7 @@
 <script src="{{url_for('static', filename='js/jquery.js')}}"></script>
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 <script>
-    var socket = io.connect();
+    var socket = io('', { autoConnect: false });
     var cameraswitch=0;
     const startstop=document.getElementById("cameraswitch");
     const video = document.querySelector("#videoElement");
@@ -48,7 +48,7 @@
     var detection_message="";
     
 
-
+    let j = 0;
     socket.on('connect', function(){
         console.log("Connected...!", socket.connected)
     });
@@ -58,7 +58,18 @@
 
     socket.on('message',function(data){
         console.log("Prediction: "+data);
+        if(data.includes("Correct")){
         detection_message=data;
+        j=j+1;
+         }
+        if(j)
+         {
+            j=j+1;
+            if(j==6)
+             j=0;
+         }
+        else
+         detection_message=data;
         ctx.font = "35px Arial";
         ctx.fillStyle = "black";
     
@@ -89,7 +100,8 @@
     switchbutton.addEventListener('click',function(event){
         event.preventDefault();
     if(!cameraswitch)
-    {
+    {   
+        socket.connect('', { transports: ['websocket','polling'] });
         selected_pose = dropdown.value;
         console.log("Pose selected: ", selected_pose);
         cameraswitch=1;
@@ -118,6 +130,7 @@
         canvas.height=video.videoHeight;
   
         ctx.drawImage(video,0,0);
+
         var data1 = document.getElementById("canvasOutput").toDataURL(type);
         ctx.font = "35px Arial";
         ctx.fillStyle = "black";    

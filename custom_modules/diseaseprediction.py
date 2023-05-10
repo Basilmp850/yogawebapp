@@ -80,6 +80,7 @@ def predictDisease(symptoms):
 	}
 	return predictions
 
+
 @disease_prediction.route('/chronicpost',methods=['POST'])
 def chronicpost():
     print("1")

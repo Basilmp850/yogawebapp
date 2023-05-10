@@ -106,6 +106,10 @@ footer{
     transition: all 0.3s ease-in-out;
 
 }
+
+.btn-primary{
+    background-color: #091529;
+}
 #canvasOutput{
     width: 700px;
     height: 500px;
@@ -167,8 +171,12 @@ main{
 .imagecontainer{
     flex-basis: 45%;
     background-color: #c2cecc;
+    /* background-image: url("../../static/yoga_detection_background.jpg"); */
     height: 100%;
     width: auto;
+
+    /* background-size: 1600px; */
+    /* opacity:1;            */
     
     
    

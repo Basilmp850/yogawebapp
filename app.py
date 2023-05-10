@@ -49,12 +49,13 @@ db=mongoclient.User_authentication
 first = True
 
 
+
 allowed_formats = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','mp4'])
 y_pred_label=""
 app = Flask(__name__)
-socketio = SocketIO(app,transports=['websocket','polling'],async_mode='eventlet')
+socketio = SocketIO(app,transports=['websocket','polling'], async_mode='eventlet' ,socket=True)
 
-
+app.config["DEBUG"]=True
 app.config["MAIL_SERVER"]='smtp.gmail.com'  
 app.config["MAIL_PORT"] = 465     
 app.config["MAIL_USERNAME"] = 'jonathannebu10@gmail.com'  
@@ -98,7 +99,6 @@ class EmployeeEncoder(JSONEncoder):
 # global preprocessor
 mail = Mail(app)   
 
-db = mongoclient.User_authentication
 
 class User:
     def start_session(self,user,verification_status=False):
@@ -634,4 +634,5 @@ def yogacorrectionform():
 if __name__ == '__main__':
     # eventlet.monkey_patch()
     # app.run(debug=True)
-    socketio.run(app,host='0.0.0.0',port=5000,debug=True)
+    # eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
+    socketio.run(app,host='0.0.0.0',port=5000,debug=True) 

@@ -5,7 +5,7 @@
 <div class="containerofvideocapture">
                
     <form method="post" action="{{ url_for('tasks') }}">
-        <input id="cameraswitch" type="submit" value="Stop/Start" name="stop" class="stop"/>
+        <input id="cameraswitch" type="submit" value="Stop/Start" name="stop" class="btn btn-primary btn-lg" />
         <!-- <input type="submit" value="Capture" name="click" class="click"/> -->
     </form>
 
@@ -33,7 +33,7 @@
 <script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 <script>
-    var socket = io.connect('', { transports: ['websocket','polling'] });
+    var socket = io('', { autoConnect: false });
     var cameraswitch=0;
     const startstop=document.getElementById("cameraswitch");
     const video = document.querySelector("#videoElement");
@@ -66,7 +66,7 @@
         success: function(data) {
           session_data = JSON.stringify(data);
         }
-      });
+      });                                                                                                                                                                                                                               
 
 
 
@@ -90,9 +90,9 @@
                     fetchVariables()
                 },1000);
             },
-            error: function(resp){
+            error: function(resp){                                                                          
                 console.log(resp.error);
-                setTimeout(function(){
+                setTimeout(function(){                                                                                      
                     fetchVariables()
                 },1000);
             }
@@ -101,13 +101,15 @@
     firsttime=1;
     switchbutton.addEventListener('click',function(event){
         event.preventDefault();
+
     if(!cameraswitch)
     {
+        socket.connect('', { transports: ['websocket','polling'] });
         cameraswitch=1;
         startstop.value="Stop";
         console.log("In turn on mode!!")
         canvas.style.display='block'
-    if (navigator.mediaDevices.getUserMedia) {
+     if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ video: true })
         .then(function (stream) {
             video.srcObject = stream;
@@ -115,7 +117,7 @@
         })
         .catch(function (error) {
             console.log(error)
-            console.log("Something went wrong!");
+            console.log("Not able to access webcam[dev console]");
         });
     }
 
@@ -132,11 +134,12 @@
         
         ctx.font = "40px Arial";
         ctx.fillStyle = "black";    
-        ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
-
+        
         var dataURI = document.getElementById("canvasOutput").toDataURL(type);
         var base64Data = dataURI.split(',')[1];
         var binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+        ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
 
        if(i%60 == 0 && cameraswitch) 
         {
