@@ -80,7 +80,7 @@ var predictionstring;
       success: function(response){
          prediction = response.prediction;
          predictionstring = prediction;
-
+        console.log(response)
         const modal = document.getElementById("myModal");
         const backdrop = document.getElementById("myBackdrop");
         console.log(response.prediction);

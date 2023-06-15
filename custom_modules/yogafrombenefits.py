@@ -1,9 +1,11 @@
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from scipy.stats import mode
 import pickle
 import numpy as np
-from app import app
+# from app import app
 
+
+yoga_from_benefits = Blueprint('yoga_from_benefits', __name__)
 
 benefits=pickle.load(open('./pickled_files/benefits.pkl', 'rb'))  
 encoder = pickle.load(open('./pickled_files/yogafrombenefits_encoder.pkl', 'rb'))
@@ -51,7 +53,7 @@ def predictYoga(benefits):
 
 # print(predictYoga("Spine Flexibility,Calmness,Digestion")["final_prediction"]);
 
-@app.route('/benefitspost',methods=['POST'])
+@yoga_from_benefits.route('/benefitspost',methods=['POST'])
 def benefitspost():
     print("1")
     prediction_attributes=""

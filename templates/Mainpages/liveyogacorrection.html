@@ -4,32 +4,180 @@
 <div class="containerofvideocapture">
 
     <form method="post" action="{{ url_for('yogacorrectionform') }}">
-        <label for="lang">Select a pose:</label>
-        <select name="yogaposes_dropdown" id="lang" onchange="this.form.submit()">
-        <option value="" selected disabled hidden>{{selected}}</option>
+        <label for="lang" style="color: #091529;font-weight: 1000;">Select a pose:</label>
+        <select name="yogaposes_dropdown" id="pose_menu">
+        <!-- <option value="" selected disabled hidden>{{selected}}</option> -->
         <option value="chair">Chair</option>
         <option value="cobra">Cobra</option>
         <option value="dog">Dog</option>
-        <option value="tree">Tree</option>
+        <option value="tree" selected>Tree</option>
         <option value="warrior">Warrior</option>
         </select>
-        <input type="submit" value="Stop/Start" name="stop" class="stop"/>
-        <input type="submit" value="Capture" name="click" class="click"/>
+        <input type="submit" id="cameraswitch" value="Stop/Start" name="stop" class="btn btn-primary btn-lg"/>
+        <!-- <input type="submit" value="Capture" name="click" class="click"/> -->
     </form>
-    <div class="imgcontainer">
-        <img src="{{ url_for('video_feed') }}" onerror='this.style.display = "none"'>
+    <div id="newcontainer">
+
+        <video autoplay="true" id="videoElement"  width="800" height="600" hidden></video>
+        <canvas id="canvasOutput" width="800" height="600"></canvas> 
+
     </div>
 
-    <div class = "detected_pose">
-        <!-- Pose Detected : {{pose}}    -->
-    </div>
+
 
 </div>
 
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static',filename='js/opencv.js') }}"></script>
 <script src="{{url_for('static', filename='js/jquery.js')}}"></script>
-<script src="{{url_for('static', filename='js/liveyogacorrectionscript.js')}}"></script>
+<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+<script>
+    var socket = io('', { autoConnect: false });
+    var cameraswitch=0;
+    const startstop=document.getElementById("cameraswitch");
+    const video = document.querySelector("#videoElement");
+    var canvas = document.getElementById("canvasOutput");
+    const ctx = canvas.getContext("2d");
+    const switchbutton = document.querySelector('input[type="submit"]');
+    const dropdown = document.getElementById("pose_menu");
+
+    //For text to speech using Web Speech API
+      
+    var detection_message="";
+    
+
+    let j = 0;
+    socket.on('connect', function(){
+        console.log("Connected...!", socket.connected)
+    });
+    socket.on('disconnect',function(){
+        console.log("Websocket connection closed!!");
+    });
+
+    socket.on('message',function(data){
+        console.log("Prediction: "+data);
+        if(data.includes("Correct")){
+        detection_message=data;
+        j=j+1;
+         }
+        if(j)
+         {
+            j=j+1;
+            if(j==6)
+             j=0;
+         }
+        else
+         detection_message=data;
+        ctx.font = "35px Arial";
+        ctx.fillStyle = "black";
+    
+        ctx.fillText(detection_message,25, canvas.height/5);
+    });
+    var session_data=""
+    $.ajax({
+        url: '/get_session_data',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          // Parse the JSON response and display the session data
+          session_data = JSON.stringify(data);
+          console.log(session_data);
+        }
+      });
+
+
+
+   
+    let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+    let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+    let cap = new cv.VideoCapture(video);
+
+    const FPS = 60;
+
+      firsttime=1
+    switchbutton.addEventListener('click',function(event){
+        event.preventDefault();
+    if(!cameraswitch)
+    {   
+        socket.connect('', { transports: ['websocket','polling'] });
+        selected_pose = dropdown.value;
+        console.log("Pose selected: ", selected_pose);
+        cameraswitch=1;
+        startstop.value="Stop";
+        console.log("In turn on mode!!")
+        canvas.style.display='block'
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function (error) {
+            console.log(error)
+            console.log("Something went wrong!");
+        });
+    }
+
+    var i = 1;
+    if(firsttime)
+    setInterval(() => {
+        cap.read(src);
+        selected_pose = dropdown.value;
+        var type = "image/jpeg"
+        canvas.width=video.videoWidth;
+        canvas.height=video.videoHeight;
+  
+        ctx.drawImage(video,0,0);
+
+        var data1 = document.getElementById("canvasOutput").toDataURL(type);
+        ctx.font = "35px Arial";
+        ctx.fillStyle = "black";    
+        ctx.fillText(detection_message,25, canvas.height/5);
+        data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
+        var data={
+            image_data: data1,
+            session_data: session_data,
+            selected_pose: selected_pose
+        };
+        if(i%60 == 0 && cameraswitch) 
+        {
+         socket.emit('correction', data);
+         i=1;
+        }
+        i=i+1;
+
+    }, 1000/FPS);
+
+}
+else {
+    console.log("In turn off mode")
+    canvas.style.display='none';
+    video.srcObject=null;
+    cameraswitch=0;
+    startstop.value="Start"
+}
+});
+
+    socket.on('response_back', function(image){
+        console.log(image)
+        const image_id = document.getElementById('processed-image');
+        image_id.src = image;
+    });
+
+    //Text to speech implementation
+    setInterval(()=>{
+        console.log("In set interval: ",detection_message)
+        let utterance = new window.SpeechSynthesisUtterance();
+        utterance.text = detection_message;
+        if(detection_message!="" && cameraswitch)
+         window.speechSynthesis.speak(utterance);
+    },5000)
+      // Usage:
+
+      
+      
+</script>
 {% endblock %}
 

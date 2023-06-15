@@ -61,7 +61,8 @@ nav{
     align-items: center;
     justify-content:space-evenly;
     
-    font-size: 15px;
+    font-size: 17px;
+    font-weight: bold;
     letter-spacing: 1.1px;
     flex-basis:50%;
     margin-left:200px;
@@ -74,6 +75,7 @@ nav{
 }
  main{
     background-color: #091529;
+    padding-bottom : 40px;
 } 
 
 
@@ -107,6 +109,14 @@ footer{
 
 }
 
+.btn-primary{
+    background-color: #091529;
+}
+#canvasOutput{
+    width: 700px;
+    height: 500px;
+    display:none
+}
 /* .navbuttons a:hover{
     background: white;
     color:black;
@@ -158,19 +168,30 @@ main{
 }
 
 .spacefortext p{
-    
+    font-family: 'Nunito Sans', sans-serif;
 }
 .imagecontainer{
     flex-basis: 45%;
     background-color: #c2cecc;
+    /* background-image: url("../../static/yoga_detection_background.jpg"); */
     height: 100%;
     width: auto;
+
+    /* background-size: 1600px; */
+    /* opacity:1;            */
     
     
    
+
+
 }
 
+.imagecontainer h3{
 
+    font-family: 'Nunito Sans', sans-serif;
+    transform: translateY(50px);
+    text-align: center;
+}
 
 
 
@@ -192,7 +213,7 @@ main{
     margin-left:60px;
     display: flex;
     align-items: center;
-    font-family: cursive;
+    
     
 }
 .el button{
@@ -269,7 +290,7 @@ aside p{
     gap: 20px;
     height:712px;
     margin-top: 70px;
-    background-color: rgb(159, 233, 233);
+    background-color: #091529;
 
     
 }
@@ -488,3 +509,38 @@ margin-left:20px;
 .usernameonnav p{
     margin:auto;
 }
+
+
+
+select {
+    background-color: #fcbf49;
+    height: 47px;
+    width: 200px;
+    
+    font-family: 'Inter', sans-serif;
+    /* Add more styles as needed */
+    font-size : 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transform:translateY(3px) ;
+    
+  }
+
+
+  select option {
+     font-size : 20px;
+  }
+
+.btn-primary{
+    background-color: #09d8e3;
+    border-radius:6px;
+    color:#021649;
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    padding : 10px;
+    display: inline-block;
+    text-align: center;
+
+    
+}
+
