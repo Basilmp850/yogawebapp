@@ -30,7 +30,7 @@ from pip._vendor import cachecontrol
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-
+import pdfkit
 
 load_dotenv()
 file_details = [
@@ -115,6 +115,7 @@ class User:
            os.makedirs(user_header+'/image_csv')
            os.makedirs(user_header+'/uploaded_video')
            os.makedirs(user_header+'/processed_videos')
+           os.makedirs(user_header+'/rendered_files')
         session['user_header']=user_header
         app.config['UPLOAD_FOLDER'] = os.path.join(user_header, 'uploaded_video')
         images_in_test_folder = os.path.join(user_header, 'uploadedimage')
@@ -310,6 +311,7 @@ def callback():
            os.makedirs(user_header+'/image_csv')
            os.makedirs(user_header+'/uploaded_video')
            os.makedirs(user_header+'/processed_videos')
+           os.makedirs(user_header+'/rendered_files')
     # global preprocessor
     session['user_header']=user_header
     from app import app
