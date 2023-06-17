@@ -55,7 +55,7 @@ oauthlib==3.2.2
 opencv-python==4.7.0.68
 opt-einsum==3.3.0
 packaging==23.0
-pandas==1.5.3
+pandas
 passlib==1.7.4
 pathlib==1.0.1
 pdfkit==1.0.0
