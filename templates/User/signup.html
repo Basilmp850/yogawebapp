@@ -1,191 +1,67 @@
 <!DOCTYPE html>
 <html>
-<title>signup</title>
-<!-- <link rel="stylesheet" href="../../static/styles/sign.css"> -->
-<!-- <link rel="stylesheet" href="{{ url_for('static',filename='styles/sign.css') }}"> -->
 <head>
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-hk2B0jsb8AYgJjx9Xc/6HrAJfSo+u6jJN6rMsUvK73J1W8pGdxd4P4y+5Q5l5Wyygz1xrZfr+0Zeu1+W/S+M0A==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+  <title>Yoga Mentor - Login</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Additional CSS Styles */
+    body {
+      background: linear-gradient(to bottom, #091529, #0e2b53);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
 
-</head>
-<style>
-  .authentication-page{
-    display: flex;
-    flex-direction: row;
-    margin: 10px;
-    align-content: center;
-    justify-content: center;
+    .form-container {
+      background-color: #FFF;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      margin: 20px;
+      width: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+    }
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .btn-container button {
+      margin: 0 5px;
+    }
+    .text-center {
+      margin-top: 20px;
+    }
+    .project-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #FFF;
+      text-align: center;
+    }
+.form-control{
+  border: 1.5px dotted #091529;
+}
     
-}
-
-
-.container{
-    box-shadow: 3px;
-    display: flex;
-    backdrop-filter: opacity(20%);
-    flex-direction: column;
-    height: 60vh;
-    width: 40vh;
-    /* background: gray; */
-    margin: 10px;
-    border-style:groove;
-    border-radius: 15px;
-    border-width: 5px;
-    position:relative;
-    box-shadow: 5px;
-    border-color : #05386b;
-    /* background-image: linear-gradient( 95.2deg, rgba(173,252,234,1) 26.8%, rgba(192,229,246,1) 64% );     */
-
-    
-}
-
-.formcontainer{
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-    box-shadow: 10px;
-    
-    
-}
-
-body{
-  /*background-color: #5cdb95;*/
-  background-image: url("../../static/signup_background4.jpg");
-  background-size: 1600px;
-  opacity:1;                               
-
-}
-.authentication{
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-    align-content: center;
-    justify-content: center;
-}
-.submit{
-background-color: black; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px;
-  border-radius: 10px;
-  /* background-image: linear-gradient(to right, #8e2de2, #4a00e0); */
-    
-}
-.submit:hover{
-    background-color: white;
-    color: black;
-    border-style:  solid;
-    border-color: black;
-    cursor: pointer;
-}
-#loginbutton{
-    margin-bottom: 30px  ;
-    margin-top: 60px;
-    
-}
-
-#google-login{
-   background-color: black; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  align-self: center;
-  border-radius: 6px;
-  width: 293px;
-  margin-top: 31px;
-  background-color: #05386b;
-  font-weight: bold;
-  letter-spacing: 2px;
-  
-  /* background-image: linear-gradient(to right, #8e2de2, #4a00e0); */
-  /* margin-top:30px;   */
-}
-#google-login:hover{
-    background-color: white;
-    color:black;
-    border-style: solid;
-    cursor:pointer;
-    
-}
-.mail_field{
-    padding: 6px;
-    border-radius: 5px;
-}
-.password{
-    padding: 6px;
-    border-radius: 5px;
-}
-.confirm_password{
-    padding: 6px;
-    border-radius: 5px;
-}
-.name_field{
-    padding: 6px;
-    border-radius: 5px;
-}
-
-#user-exists-google{
-    padding-left: 5px;
-}
-
-.commonclass{
-  margin-top: 51px;
-}
-
-.signuppart .email{
-margin-top:17px;
-
-}
-
-.signuppart .emailpass{
-margin-top:21px;
-}
-
-.container h1{
-  color : #022a6b;
-  font-weight: 700;
-}
-
-.container input{
-  border : none;
-  border-radius: 0.4px;
-}
-
-.bgcolor{
-  background-color: #05386b;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-label{
-  margin-bottom:18.5px;
-}
-
-
-.signuppart .mail_field{
-  margin-top: 12px;
-}
-
-.signuppart .password{
-  margin-top: -17px;
-}
-
-
-
-::placeholder {
-  color: #05386b;
-  font-weight: bold;
-}
-
-
 .modal_container{
   box-shadow: 5px;
   display: none;
@@ -244,88 +120,95 @@ height: 100%;
 
 }
 
-</style>
+.modal_container {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  display: none;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+  width: 400px;
+  flex-direction: column;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary{
+      background-color: #091529;
+}
+input{
+  border: 60px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+}
+  </style>
+</head>
 <body>
+  <h1 class="project-title">Yoga Mentor</h1>
+  <div class="container">
+    <div class="form-container">
+      <h2>Sign Up</h2>
+      <form name="signup_form" class ="formcontainer" id="signupform">
+        <div class="form-group">
+          <label for="signupName">Name</label>
+          <input name="name" type="text" class="form-control name_field" id="signupName">
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input name="email" type="email" class="form-control mail_field" id="signupEmail">
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input name="psw" type="password" class="form-control password" id="signupPassword">
+        </div>
+        <div class="form-group">
+          <label for="signupRepeatPassword">Repeat Password</label>
+          <input name="psw-repeat" type="password" class="form-control confirm_password" id="signupRepeatPassword">
+        </div>
+        <p class="error error--hidden"></p>
 
-<div class = "authentication">
-<div class="authentication-page">
-  <!-- <div id="expirationWarning" type="hidden" role="alert">
-    <span class="hidden">Invalid Username/Pass</span>
-  </div> -->
-  <div class="container signin">
-  <form name="signup_form" class = "formcontainer" id="signupform">
- 
-      <h1>SIGN UP</h1>
-      <!-- <p>Please fill in this form to create an account.</p> -->
-      <label for="email"><b></b></label>
-      <input type="text"  class = "name_field" placeholder="Name" name="name" required>
-      <label for="email"><b></b></label>
-      <input type="text"  class = "mail_field" placeholder = 'E-mail'name="email" required>
-
-      <label for="psw"><b></b></label>
-      <input type="password" class="password"  placeholder = 'Password' name="psw" required >
-
-      <label for="psw-repeat"><b></b></label>
-      <input type="password" class="confirm_password" name="psw-repeat" placeholder="Repeat password" required >
-      
-      <p class="error error--hidden"></p>
-  
-       
-<input type="submit" value="SIGN UP" class = "submit bgcolor">
-
-
-  </form>
-</div>
-<div class="container signuppart">
-  <form name="login-form" class = "formcontainer" id="loginform">
- 
-    <h1>LOG IN</h1>
-    <!-- <p>Login with credentials</p> -->
-    <hr>
-    <label for="email" class="email"><b></b></label>
-    <input type="text" class = "mail_field" placeholder='E-mail'name="email" required>
-
-    <label for="psw" class="emailpass"><b></b></label>
-    <input type="password" class="password"  name="psw" placeholder='Password'required >
-
-    
+        <div class="btn-container">
+          <button type="submit" class="btn btn-primary" class="submit">Sign Up</button>
+        </div>
+      </form>
+    </div>
+    <div class="form-container">
+      <h2>Sign In</h2>
+      <form name="login-form" class ="formcontainer" id="loginform">
+        <div class="form-group">
+          <label for="signinEmail">Email</label>
+          <input type="email" name="email" class="form-control mail_field" id="signinEmail">
+        </div>
+        <div class="form-group">
+          <label for="signinPassword">Password</label>
+          <input name="psw" type="password" class="form-control password" id="signinPassword">
+        </div>
+            
     <p class="error error--hidden"></p>
-     
-    <input type="submit" value="LOG IN" class = "submit commonclass bgcolor">
+        <div class="btn-container">
+          <!-- <input type="submit" value="LOG IN" class = "btn btn-primary submit commonclass bgcolor"> -->
+          <button type="submit" class="btn btn-primary">Sign In</button>
+          <a class="btn btn-outline-dark" href="{{url_for('login')}}" id="google-login" role="button">Sign in with Google</a>
+        </div>
+      </form>
+    </div>
     
-</form>
- 
-</div>
-
-<div id="signupModal" class="modal_container">
-
-  <div class="modal-content">
-    <form id="modalform" class = "formcontainer">  
-  
-      <h4> One-time password has been sent to the email id. Please check the email for the verification.</h4>  
-             
-      Enter OTP: <input type="text" name="otp" class="mail_field">
-      <p class="error error--hidden"></p>  
-        
-      <input type="submit" value="Submit" class = "submit">  
-        
-      </form>  
+    <div id="signupModal" class="modal_container">
+      <div class="modal-content">
+        <form id="modalform" class="formcontainer">  
+          <h4>One-time password has been sent to the email id. Please check the email for verification.</h4>  
+          Enter OTP: <input type="text" name="otp" class="mail_field">
+          <p class="error error--hidden"></p>  
+          <input type="submit" value="Submit" class="submit">  
+        </form>  
+      </div>
+    </div>
   </div>
-
-</div>
-
-</div>
-
- <a href="{{url_for('login')}}" id="google-login" >CONTINUE WITH GOOGLE</a>
-  {% if email: %}
-  <p id="user-exists-google">{{email}} exists</p>
-{% endif %}
-<div class="authentication"></div>
-<div id="signupbackdrop" class="backdrop"></div>
-
-</div>
-<script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+  <script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
 <script src="{{ url_for('static',filename='js/scripts.js') }}"></script>
-
 </body>
 </html>

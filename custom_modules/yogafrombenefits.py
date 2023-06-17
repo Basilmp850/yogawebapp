@@ -1,7 +1,9 @@
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, session, send_file, render_template
 from scipy.stats import mode
 import pickle
 import numpy as np
+import pdfkit
+import os
 # from app import app
 
 
@@ -94,5 +96,60 @@ def benefitspost():
           "symptom5": request.form.get("5"),
           "yoga_recommendation" : prediction
      }
-
+     session['symptoms'] = symptoms
      return jsonify(symptoms)
+    
+
+   
+
+@yoga_from_benefits.route('/pdf1')
+def yoga_rec_pdffunction():
+ # Set up options
+ options = {
+ 'page-size': 'A4',
+ 'margin-top': '0mm',
+ 'margin-right': '0mm',
+ 'margin-bottom': '0mm',
+ 'margin-left': '0mm',
+ }
+ config = pdfkit.configuration(wkhtmltopdf='wkhtmltopdf.exe')
+ # Directory path
+
+ directory = os.path.join('templates','Basic_layouts')
+ # HTML file name
+ html_file = 'pdfhtmlfile_yogarec.html'
+
+ #rendering the template based on the symptoms and predicted output
+ symptoms = session['symptoms']
+ count = 0
+ for i in range(1,6,1):
+     if len(symptoms['symptom'+str(i)]):
+         count = count + 1
+
+ print(count)
+ base_path = os.path.join(session['user_header'],'rendered_files')
+ # Path to output PDF file
+
+ output_pdf = os.path.join(base_path,'output.pdf')
+#  rendered_html_path = os.path.join(session['user_header'],'rendered_html')
+ rendered_html_path = os.path.join(base_path,'rendered_pdfhtml.html')
+#  rendered_html_path = os.path.join(directory,'rendered_pdfhtml.html')
+ # Get the full file path
+ html_path = os.path.join(directory, html_file)
+ rendered_html_file = render_template('Basic_layouts/pdfhtmlfile_yogarec.html', symptoms=symptoms, count = count+1)
+ with open(rendered_html_path, 'w') as f:
+        f.write(rendered_html_file)
+ # Generate PDF from HTML file
+ pdfkit.from_file(rendered_html_path, output_pdf, options=options, configuration = config)
+ if os.path.exists(output_pdf):
+ # Send the PDF file as a response
+#     response = make_response(send_file(output_pdf))
+#     response.headers['Content-Disposition'] = f'attachment; filename={output_pdf}'
+
+#     return response
+
+    return send_file(output_pdf, as_attachment=False)
+#   return send_file(output_pdf, attachment_filename=output_pdf, as_attachment=True)
+ return 'pdf not rendered'
+
+

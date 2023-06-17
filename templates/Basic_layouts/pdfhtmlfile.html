@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Document</title>
+ <style>
+ caption {
+ border-top: 1px solid black;
+ border-left:1px solid black;
+ border-right: 1px solid black;
+ padding: 8px;
+ font-weight: bold;
+ }
+ h2,h3{
+ text-align: center;
+ }
+ table {
+ border-collapse: collapse;
+ width: 80%;
+ margin-left: auto;
+ margin-right:auto;
+ margin-top: 50px;
+ }
+ th, td {
+ padding: 8px;
+ text-align: left;
+
+
+ }
+ th {
+ background-color: #f2f2f2;
+ width:35%;
+ border-right:1px solid black;
+ border-bottom : 1px solid black;
+ }
+ td{
+ border-top:1px solid black;
+ }
+ </style>
+</head>
+<body>
+ <h2>INTELLIGENT PERSONALISED HEALTH ASSISTANCE WEB APP</h2>
+
+ <table border="1">
+ <caption><h3>RESPONSE GENERATED FOR DISEASE PREDICTION AND YOGA
+RECOMMENDATIONS</h3></caption>
+ <tbody>
+ <tr>
+
+ <th rowspan="{{count}}">Symptoms</th>
+{% if symptoms.symptom1 :%}
+ <tr><td>{{symptoms.symptom1}}</td></tr>
+ {% endif %}
+{% if symptoms.symptom2 :%}
+ <tr><td>{{symptoms.symptom2}}</td></tr>
+ {% endif %}
+{% if symptoms.symptom3 :%}
+ <tr><td>{{symptoms.symptom3}}</td></tr>
+ {% endif %}
+{% if symptoms.symptom4 :%}
+ <tr><td>{{symptoms.symptom4}}</td></tr>
+ {% endif %}
+{% if symptoms.symptom5 :%}
+ <tr><td>{{symptoms.symptom5}}</td></tr>
+{% endif %}
+
+ </tr>
+ <tr>
+ <th>Disease Predicted</th>
+ <td>{{symptoms.prediction}}</td>
+
+ </tr>
+ <tr>
+ <th rowspan = "4">Yoga Recommedations</th>
+
+ <tr><td>{{symptoms.yoga_recommendation[0]}}</td></tr>
+ <tr><td>{{symptoms.yoga_recommendation[1]}}</td></tr>
+ <tr><td>{{symptoms.yoga_recommendation[2]}}</td></tr>
+ </tr>
+
+ </tbody>
+</table>
+<script>
+
+</script>
+
+</body>
+</html>
