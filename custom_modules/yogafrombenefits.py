@@ -1,7 +1,8 @@
 from flask import request, jsonify, Blueprint, session, send_file, render_template
 from scipy.stats import mode
 import pickle
-import numpy as np
+from numpy import array
+# import numpy as np
 import pdfkit
 import os
 # from app import app
@@ -36,7 +37,7 @@ def predictYoga(benefits):
 		
 	# reshaping the input data and converting it
 	# into suitable format for model predictions
-	input_data = np.array(input_data).reshape(1,-1)
+	input_data = array(input_data).reshape(1,-1)
 	
 	# generating individual outputs
 	rf_prediction = data_dict["predictions_classes"][final_rf_model.predict(input_data)[0]]

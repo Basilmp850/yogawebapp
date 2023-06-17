@@ -14,9 +14,9 @@ disease_prediction = Blueprint('disease_prediction', __name__)
 
 import pickle 
 from scipy.stats import mode
-import numpy as np
+from numpy import array
 from sklearn.preprocessing import LabelEncoder
-import pandas as pd
+# import pandas as pd
 	
 
 data = pickle.load(open('./pickled_files/diseasepredictiondataset.pkl', 'rb'))  
@@ -62,7 +62,7 @@ def predictDisease(symptoms):
 		
 	# reshaping the input data and converting it
 	# into suitable format for model predictions
-	input_data = np.array(input_data).reshape(1,-1)
+	input_data = array(input_data).reshape(1,-1)
 	
 	# generating individual outputs
 	print(final_rf_model.predict(input_data))

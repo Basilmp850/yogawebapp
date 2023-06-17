@@ -1,7 +1,10 @@
-import tensorflow as tf
+# import tensorflow as tf
 from sklearn.model_selection import train_test_split
-from tensorflow import keras
-import pandas as pd
+from tensorflow import keras, gather, expand_dims,reduce_max,maximum,size,broadcast_to
+from tensorflow.io import read_file,decode_jpeg
+from tensorflow.linalg import norm
+from pandas import read_csv, concat
+# import pandas as pd
 import os
 import sys
 pose_sample_rpi_path = os.path.join(os.getcwd(), 'movenet_folder/lite/examples/pose_estimation/raspberry_pi')
@@ -10,10 +13,10 @@ import utils
 from  data import BodyPart  
 import tempfile
 import csv
-import tqdm
-import numpy as np
+# import tqdm
+from numpy import array,float32,str_
 from matplotlib import pyplot as plt
-import cv2
+# import cv2
 import pickle 
 from movenet_folder.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
 
@@ -21,7 +24,7 @@ movenet = Movenet('movenet_thunder')
 # BodyPart =  pickle.load(open('pickled_files/BodyPt.pkl', 'rb'))
 # movenet = pickle.load(open('pickled_files/movenet.pkl','rb'))
 # model = pickle.load(open('pickled_files/yogadetectionmodel.pkl','rb'))
-model = tf.keras.models.load_model('pickled_files/my_model.h5')
+model = keras.models.load_model('pickled_files/my_model.h5')
 class_names = pickle.load(open('pickled_files/class_names.pkl','rb'))
 
 
@@ -134,14 +137,14 @@ class MoveNetPreprocessor(object):
           image_path = os.path.join(images_in_folder, image_name)
 
           try:
-            image = tf.io.read_file(image_path)
-            image = tf.io.decode_jpeg(image)
+            image = read_file(image_path)
+            image = decode_jpeg(image)
           except:
             self._messages.append('Skipped ' + image_path + '. Invalid image.')
             continue
           else:
-            image = tf.io.read_file(image_path)
-            image = tf.io.decode_jpeg(image)
+            image = read_file(image_path)
+            image = decode_jpeg(image)
             image_height, image_width, channel = image.shape
 
           # Skip images that isn't RGB because Movenet requires RGB images
@@ -172,13 +175,13 @@ class MoveNetPreprocessor(object):
           # cv2.imwrite(os.path.join(images_out_folder, image_name), output_frame)
 
           # Get landmarks and scale it to the same size as the input image
-          pose_landmarks = np.array(
+          pose_landmarks = array(
               [[keypoint.coordinate.x, keypoint.coordinate.y, keypoint.score]
                 for keypoint in person.keypoints],
-              dtype=np.float32)
+              dtype=float32)
 
           # Write the landmark coordinates to its per-class CSV file
-          coordinates = pose_landmarks.flatten().astype(np.str_).tolist()
+          coordinates = pose_landmarks.flatten().astype(str_).tolist()
           csv_out_writer.writerow([image_name] + coordinates)
 
         if not valid_image_count:
@@ -205,7 +208,7 @@ class MoveNetPreprocessor(object):
     for class_index, class_name in enumerate(self._pose_class_names):
       csv_out_path = os.path.join(self._csvs_out_folder_per_class,
                                   class_name + '.csv')
-      per_class_df = pd.read_csv(csv_out_path, header=None)
+      per_class_df = read_csv(csv_out_path, header=None)
 
       # Add the labels
       per_class_df['class_no'] = [class_index]*len(per_class_df)
@@ -220,7 +223,7 @@ class MoveNetPreprocessor(object):
         total_df = per_class_df
       else:
         # Concatenate each class's data into the total dataframe
-        total_df = pd.concat([total_df, per_class_df], axis=0)
+        total_df = concat([total_df, per_class_df], axis=0)
 
     list_name = [[bodypart.name + '_x', bodypart.name + '_y', 
                   bodypart.name + '_score'] for bodypart in BodyPart] 
@@ -296,7 +299,7 @@ def load_pose_landmarks(csv_path):
   """
 
   # Load the CSV file
-  dataframe = pd.read_csv(csv_path)
+  dataframe = read_csv(csv_path)
   df_to_process = dataframe.copy()
 
   # Drop the file_name columns as you don't need it during training.
@@ -323,8 +326,8 @@ def load_pose_landmarks(csv_path):
 def get_center_point(landmarks, left_bodypart, right_bodypart):
   """Calculates the center point of the two given landmarks."""
 
-  left = tf.gather(landmarks, left_bodypart.value, axis=1)
-  right = tf.gather(landmarks, right_bodypart.value, axis=1)
+  left = gather(landmarks, left_bodypart.value, axis=1)
+  right = gather(landmarks, right_bodypart.value, axis=1)
   center = left * 0.5 + right * 0.5
   return center
 
@@ -345,25 +348,25 @@ def get_pose_size(landmarks, torso_size_multiplier=2.5):
                                       BodyPart.RIGHT_SHOULDER)
 
   # Torso size as the minimum body size
-  torso_size = tf.linalg.norm(shoulders_center - hips_center)
+  torso_size = norm(shoulders_center - hips_center)
 
   # Pose center
   pose_center_new = get_center_point(landmarks, BodyPart.LEFT_HIP, 
                                      BodyPart.RIGHT_HIP)
-  pose_center_new = tf.expand_dims(pose_center_new, axis=1)
+  pose_center_new = expand_dims(pose_center_new, axis=1)
   # Broadcast the pose center to the same size as the landmark vector to
   # perform substraction
-  pose_center_new = tf.broadcast_to(pose_center_new,
-                                    [tf.size(landmarks) // (17*2), 17, 2])
+  pose_center_new = broadcast_to(pose_center_new,
+                                    [size(landmarks) // (17*2), 17, 2])
 
   # Dist to pose center
-  d = tf.gather(landmarks - pose_center_new, 0, axis=0,
-                name="dist_to_pose_center")
+  d = gather(landmarks - pose_center_new, 0, axis=0,
+                name="dist_to_pose_center")            
   # Max dist to pose center
-  max_dist = tf.reduce_max(tf.linalg.norm(d, axis=0))
+  max_dist = reduce_max(norm(d, axis=0))                                                                                                 
 
   # Normalize scale
-  pose_size = tf.maximum(torso_size * torso_size_multiplier, max_dist)
+  pose_size = maximum(torso_size * torso_size_multiplier, max_dist)
 
   return pose_size
 

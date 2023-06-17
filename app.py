@@ -7,9 +7,11 @@ from dotenv import load_dotenv
 # import requests
 import pathlib
 import os
-import cv2
+from cv2 import imread, imdecode, IMREAD_COLOR,cvtColor,COLOR_RGB2BGR,imwrite
+# import cv2
 # import datetime,time
-import numpy as np
+from numpy import frombuffer,uint8,argmax,array
+# import numpy as np
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
 import custom_modules.yogaposturedetection as ygp
@@ -413,8 +415,8 @@ def socket_detection(data):
     detection_threshold=0.15
     y_pred_lab=""
     try:
-     nparr = np.frombuffer(data['image_data'], np.uint8)
-     frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+     nparr = frombuffer(data['image_data'], uint8)
+     frame = imdecode(nparr, IMREAD_COLOR)
     # decode and convert into image
     # b = io.BytesIO(base64.b64decode(data['image_data']))
     #  pimg = Image.open(b)
@@ -431,7 +433,7 @@ def socket_detection(data):
      for file in os.listdir(user_header+'/uploadedimage/chair'):
        os.remove(user_header+'/uploadedimage/chair/' + file)
             
-     cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+     imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
      csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
      for file in os.listdir(user_header+'/image_csv'):
         os.remove(user_header+'/image_csv/' + file)
@@ -442,7 +444,7 @@ def socket_detection(data):
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
              y_pred = ygp.model.predict(X_test)
-             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_label = [ygp.class_names[i] for i in argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
     except: 
      print("Not able to open image")
@@ -479,7 +481,7 @@ def socket_correction(data):
      pimg = Image.open(b)
 
     ## converting RGB to BGR, as opencv standards
-     frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
+     frame = cvtColor(array(pimg), COLOR_RGB2BGR)
 
     # Process the image frame
 
@@ -489,7 +491,7 @@ def socket_correction(data):
      for file in os.listdir(user_header+'/uploadedimage/chair'):
        os.remove(user_header+'/uploadedimage/chair/' + file)
             
-     cv2.imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
+     imwrite(os.path.join(image_loc, 'videoframe.jpg'), frame)
      csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
      for file in os.listdir(user_header+'/image_csv'):
         os.remove(user_header+'/image_csv/' + file)
@@ -500,7 +502,7 @@ def socket_correction(data):
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
              y_pred = ygp.model.predict(X_test)
-             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_label = [ygp.class_names[i] for i in argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
 
              if selected_pose=="tree" :
@@ -611,7 +613,7 @@ def detection():
             if len(os.listdir(user_header+'/image_csv'))!=0:
              X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
              y_pred = ygp.model.predict(X_test)
-             y_pred_label = [ygp.class_names[i] for i in np.argmax(y_pred, axis=1)]
+             y_pred_label = [ygp.class_names[i] for i in argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
              print(full_filename)
              file_details[0]["full_filename"] = full_filename
