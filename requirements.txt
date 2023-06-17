@@ -17,7 +17,7 @@ dill==0.3.6
 Django
 dnspython==2.3.0
 dominate==2.7.0
-eventlet==0.33.3
+eventlet
 Flask==2.2.2
 Flask-Bootstrap==3.3.7.1
 Flask-Mail==0.9.1
