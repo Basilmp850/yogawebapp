@@ -14,7 +14,8 @@ from numpy import frombuffer,uint8,argmax,array
 # import numpy as np
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
-import custom_modules.yogaposturedetection as ygp
+from custom_modules.yogaposturedetection import MoveNetPreprocessor, load_pose_landmarks, model, class_names
+# import custom_modules.yogaposturedetection as ygp
 import custom_modules.yogaposecorrection as ypc
 import jsonpickle
 import shutil
@@ -32,7 +33,7 @@ from pip._vendor import cachecontrol
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 import requests
-import pdfkit
+# import pdfkit
 
 load_dotenv()
 file_details = [
@@ -45,7 +46,6 @@ file_details = [
 
 mongoclient = MongoClient(os.getenv("MONGO_CLIENT"))
 db=mongoclient.User_authentication
-
 #for the purpose of isolating updation of active_user_dictionary
 
 first = True
@@ -69,12 +69,13 @@ app.config['MAIL_USE_SSL'] = True
 
 
 # from user_auth import models
+from custom_modules.diseaseprediction import disease_prediction
+# import custom_modules.diseaseprediction as diseasepredictor
+app.register_blueprint(disease_prediction)
 
-import custom_modules.diseaseprediction as diseasepredictor
-app.register_blueprint(diseasepredictor.disease_prediction)
-
-import custom_modules.yogafrombenefits as yogafrombenefits
-app.register_blueprint(yogafrombenefits.yoga_from_benefits)
+from custom_modules.yogafrombenefits import yoga_from_benefits
+# import custom_modules.yogafrombenefits as yogafrombenefits
+app.register_blueprint(yoga_from_benefits)
 
 # from user_auth import routes
 # app.register_blueprint(routes.user_auth_routes)
@@ -123,7 +124,7 @@ class User:
         images_in_test_folder = os.path.join(user_header, 'uploadedimage')
         images_out_test_folder = 'uploadedimage_output'
         csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
-        preprocessor = ygp.MoveNetPreprocessor(
+        preprocessor = MoveNetPreprocessor(
         images_in_folder=images_in_test_folder,
         images_out_folder=images_out_test_folder,
         csvs_out_path=csvs_out_test_path
@@ -321,7 +322,7 @@ def callback():
     images_in_test_folder = os.path.join(user_header, 'uploadedimage')
     images_out_test_folder = 'uploadedimage_output'
     csvs_out_test_path = user_header+'/image_csv/uploaded_image.csv'
-    preprocessor = ygp.MoveNetPreprocessor(
+    preprocessor = MoveNetPreprocessor(
     images_in_folder=images_in_test_folder,
     images_out_folder=images_out_test_folder,
     csvs_out_path=csvs_out_test_path
@@ -440,11 +441,11 @@ def socket_detection(data):
 
      preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
      if len(os.listdir(user_header+'/image_csv'))!=0:
-             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+             X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
-             y_pred = ygp.model.predict(X_test)
-             y_pred_label = [ygp.class_names[i] for i in argmax(y_pred, axis=1)]
+             y_pred = model.predict(X_test)
+             y_pred_label = [class_names[i] for i in argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
     except: 
      print("Not able to open image")
@@ -498,11 +499,11 @@ def socket_correction(data):
 
      preprocessor.process(per_pose_class_limit=None,detection_threshold=detection_threshold)
      if len(os.listdir(user_header+'/image_csv'))!=0:
-             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
+             X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
              print('LEFT HIP X')
              print(df_test['LEFT_HIP_x'][0])
-             y_pred = ygp.model.predict(X_test)
-             y_pred_label = [ygp.class_names[i] for i in argmax(y_pred, axis=1)]
+             y_pred = model.predict(X_test)
+             y_pred_label = [class_names[i] for i in argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
 
              if selected_pose=="tree" :
@@ -611,9 +612,9 @@ def detection():
             # csvs_out_test_path = 'uploaded_image.csv'
             preprocessor.process(per_pose_class_limit=None,detection_threshold=0.15)
             if len(os.listdir(user_header+'/image_csv'))!=0:
-             X_test, y_test, _, df_test = ygp.load_pose_landmarks(csvs_out_test_path)
-             y_pred = ygp.model.predict(X_test)
-             y_pred_label = [ygp.class_names[i] for i in argmax(y_pred, axis=1)]
+             X_test, y_test, _, df_test = load_pose_landmarks(csvs_out_test_path)
+             y_pred = model.predict(X_test)
+             y_pred_label = [class_names[i] for i in argmax(y_pred, axis=1)]
              y_pred_lab = y_pred_label[0]
              print(full_filename)
              file_details[0]["full_filename"] = full_filename

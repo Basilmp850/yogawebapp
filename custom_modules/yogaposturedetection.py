@@ -1,5 +1,5 @@
 # import tensorflow as tf
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 from tensorflow import keras, gather, expand_dims,reduce_max,maximum,size,broadcast_to
 from tensorflow.io import read_file,decode_jpeg
 from tensorflow.linalg import norm
@@ -15,7 +15,7 @@ import tempfile
 import csv
 # import tqdm
 from numpy import array,float32,str_
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 # import cv2
 import pickle 
 from movenet_folder.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
@@ -27,7 +27,7 @@ movenet = Movenet('movenet_thunder')
 model = keras.models.load_model('pickled_files/my_model.h5')
 class_names = pickle.load(open('pickled_files/class_names.pkl','rb'))
 
-
+# print("model size : "+str(sys.getsizeof(Movenet)))
 
 def detect(input_tensor, inference_count=3):
   """Runs detection on an input image.

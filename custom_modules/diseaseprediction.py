@@ -15,7 +15,7 @@ disease_prediction = Blueprint('disease_prediction', __name__)
 import pickle 
 from scipy.stats import mode
 from numpy import array
-from sklearn.preprocessing import LabelEncoder
+# from sklearn.preprocessing import LabelEncoder
 # import pandas as pd
 	
 
