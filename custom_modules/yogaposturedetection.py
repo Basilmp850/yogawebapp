@@ -1,6 +1,9 @@
 # import tensorflow as tf
 # from sklearn.model_selection import train_test_split
-from tensorflow import keras, gather, expand_dims,reduce_max,maximum,size,broadcast_to
+from tensorflow import gather, expand_dims,reduce_max,maximum,size,broadcast_to
+from tensorflow.keras.models import load_model
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.io import read_file,decode_jpeg
 from tensorflow.linalg import norm
 from pandas import read_csv, concat
@@ -9,7 +12,7 @@ import os
 import sys
 pose_sample_rpi_path = os.path.join(os.getcwd(), 'movenet_folder/lite/examples/pose_estimation/raspberry_pi')
 sys.path.append(pose_sample_rpi_path)
-import utils
+# import utils
 from  data import BodyPart  
 import tempfile
 import csv
@@ -20,11 +23,14 @@ from numpy import array,float32,str_
 import pickle 
 from movenet_folder.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
 
+
+
+
 movenet = Movenet('movenet_thunder')
 # BodyPart =  pickle.load(open('pickled_files/BodyPt.pkl', 'rb'))
 # movenet = pickle.load(open('pickled_files/movenet.pkl','rb'))
 # model = pickle.load(open('pickled_files/yogadetectionmodel.pkl','rb'))
-model = keras.models.load_model('pickled_files/my_model.h5')
+model = load_model('pickled_files/my_model.h5')
 class_names = pickle.load(open('pickled_files/class_names.pkl','rb'))
 
 # print("model size : "+str(sys.getsizeof(Movenet)))
@@ -43,6 +49,8 @@ def detect(input_tensor, inference_count=3):
   Returns:
     A Person entity detected by the MoveNet.SinglePose.
   """
+  # movenet = Movenet('movenet_thunder')
+
   image_height, image_width, channel = input_tensor.shape
 
   # Detect pose using the full input image
@@ -313,7 +321,7 @@ def load_pose_landmarks(csv_path):
 
   # Convert the input features and labels into the correct format for training.
   X = df_to_process.astype('float64')
-  y = keras.utils.to_categorical(y)
+  y = to_categorical(y)
 
   return X, y, classes, dataframe
 # X, y, class_names, _ = load_pose_landmarks(csvs_out_train_path)
@@ -407,14 +415,31 @@ def get_pose_size(landmarks, torso_size_multiplier=2.5):
 
 # Add a checkpoint callback to store the checkpoint that has the highest
 # validation accuracy.
+
+
+
+
+
+
 checkpoint_path = "weights.best.hdf5"
-checkpoint = keras.callbacks.ModelCheckpoint(checkpoint_path,
+checkpoint = ModelCheckpoint(checkpoint_path,
                              monitor='val_accuracy',
                              verbose=1,
                              save_best_only=True,
                              mode='max')
-earlystopping = keras.callbacks.EarlyStopping(monitor='val_accuracy', 
+earlystopping = EarlyStopping(monitor='val_accuracy', 
                                               patience=20)
+
+
+
+
+
+
+
+
+
+
+
 
 # Start training
 
