@@ -6,6 +6,8 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.io import read_file,decode_jpeg
 from tensorflow.linalg import norm
+from tensorflow.config import list_physical_devices
+from tensorflow.config.experimental import set_memory_growth
 from pandas import read_csv, concat
 # import pandas as pd
 import os
@@ -13,7 +15,7 @@ import sys
 pose_sample_rpi_path = os.path.join(os.getcwd(), 'movenet_folder/lite/examples/pose_estimation/raspberry_pi')
 sys.path.append(pose_sample_rpi_path)
 # import utils
-from  data import BodyPart  
+from data import BodyPart  
 import tempfile
 import csv
 # import tqdm
@@ -22,7 +24,6 @@ from numpy import array,float32,str_
 # import cv2
 import pickle 
 from movenet_folder.lite.examples.pose_estimation.raspberry_pi.ml import Movenet
-
 
 
 

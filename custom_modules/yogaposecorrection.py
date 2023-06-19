@@ -140,9 +140,9 @@ def chair_pose_correction(df):
     # print(df['LEFT_SHOULDER_x'][0])
     if abs(df['LEFT_SHOULDER_x'][0] - df['RIGHT_SHOULDER_x'][0]) > 40:
         command = "Please turn to your right or your left"
-    elif right_knee_angle>125 or left_knee_angle>125:
+    elif right_knee_angle>140 or left_knee_angle>140:
         command = "Please bend your knees"
-    elif right_knee_angle<90 or left_knee_angle<90:
+    elif right_knee_angle<80 or left_knee_angle<80:
         command = "Slightly raise your hip"
     elif right_hip_angle>130 or left_hip_angle>130:
         command="Lower your body forward"

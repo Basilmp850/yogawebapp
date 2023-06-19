@@ -12,6 +12,9 @@
     <div id="newcontainer">
 
         <video autoplay="true" id="videoElement"  width="700" height="500" hidden></video>
+        <button id="fullscreenButton" class="btn btn-primary">
+            <i class="fas fa-expand"></i> 
+        </button>
         <canvas id="canvasOutput"></canvas> 
 
     </div>
@@ -31,10 +34,11 @@
 {% block scripts %}
 <script src="{{ url_for('static',filename='js/opencv.js') }}"></script>
 <script src="{{ url_for('static',filename='js/jquery.js') }}"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
 <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
 <script>
     var socket = io('', { autoConnect: false });
-    var cameraswitch=0;
+    var cameraswitch=1;
     const startstop=document.getElementById("cameraswitch");
     const video = document.querySelector("#videoElement");
     var canvas = document.getElementById("canvasOutput");
@@ -76,7 +80,90 @@
     let cap = new cv.VideoCapture(video);
 
     const FPS = 60;
+    socket.connect('', { transports: ['websocket','polling'] });
 
+    fullscreenButton.addEventListener('click', toggleFullscreen);
+
+    // Function to toggle fullscreen mode
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        // If canvas is not in fullscreen, enter fullscreen
+        if (canvas.requestFullscreen) {
+          canvas.requestFullscreen();
+        } else if (canvas.mozRequestFullScreen) { // Firefox
+          canvas.mozRequestFullScreen();
+        } else if (canvas.webkitRequestFullscreen) { // Chrome, Safari and Opera
+          canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) { // Internet Explorer and Edge
+          canvas.msRequestFullscreen();
+        }
+      } else {
+        // If canvas is already in fullscreen, exit fullscreen
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+          document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // Internet Explorer and Edge
+          document.msExitFullscreen();
+        }
+      }
+    }
+
+    cameraswitch=1;
+   // startstop.value="Stop";
+    console.log("In turn on mode!!")
+    canvas.style.display='block'
+ if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(function (error) {
+        console.log(error)
+        console.log("Not able to access webcam[dev console]");
+    });
+}
+var i = 1;
+setInterval(() => {
+    cap.read(src);
+    
+    var type = "image/jpeg"
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+
+    ctx.drawImage(video,0,0);
+    
+    ctx.font = "40px Arial";
+    ctx.fillStyle = "black";    
+    
+    var dataURI = document.getElementById("canvasOutput").toDataURL(type);
+    var base64Data = dataURI.split(',')[1];
+    var binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+    ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
+
+   if(i%60 == 0 && cameraswitch) 
+    {
+        var blob = new Blob([binaryData], { type: 'image/jpeg' });
+
+        //data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
+
+        //console.log(data1)
+        console.log(blob)
+
+        var data={
+            image_data: blob,
+            session_data: session_data
+        };
+     socket.emit('detection', data);
+     i=1;
+    }
+    i=i+1;
+    firsttime=0;
+}, 1000/FPS);
 
     var fetchPrediction = function(){
         $.ajax({
@@ -98,7 +185,7 @@
             }
         });
     }
-    firsttime=1;
+    //firsttime=1;
     switchbutton.addEventListener('click',function(event){
         event.preventDefault();
 
@@ -106,9 +193,10 @@
     {
         socket.connect('', { transports: ['websocket','polling'] });
         cameraswitch=1;
-        startstop.value="Stop";
+       // startstop.value="Stop";
         console.log("In turn on mode!!")
         canvas.style.display='block'
+        fullscreenButton.style.display="block";
      if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({ video: true })
         .then(function (stream) {
@@ -120,54 +208,14 @@
             console.log("Not able to access webcam[dev console]");
         });
     }
-
-    var i = 1;
-    if(firsttime)
-    setInterval(() => {
-        cap.read(src);
-        
-        var type = "image/jpeg"
-        canvas.width=video.videoWidth;
-        canvas.height=video.videoHeight;
-  
-        ctx.drawImage(video,0,0);
-        
-        ctx.font = "40px Arial";
-        ctx.fillStyle = "black";    
-        
-        var dataURI = document.getElementById("canvasOutput").toDataURL(type);
-        var base64Data = dataURI.split(',')[1];
-        var binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-
-        ctx.fillText(detection_message,canvas.width/5, canvas.height/2);
-
-       if(i%60 == 0 && cameraswitch) 
-        {
-            var blob = new Blob([binaryData], { type: 'image/jpeg' });
-
-            //data1 = data1.replace('data:' + type + ';base64,', ''); //split off junk 
-    
-            //console.log(data1)
-            console.log(blob)
-    
-            var data={
-                image_data: blob,
-                session_data: session_data
-            };
-         socket.emit('detection', data);
-         i=1;
-        }
-        i=i+1;
-        firsttime=0;
-    }, 1000/FPS);
-
 }
 else {
     console.log("In turn off mode")
     canvas.style.display='none';
     video.srcObject=null;
     cameraswitch=0;
-    startstop.value="Start"
+    fullscreenButton.style.display="none";
+   // startstop.value="Start"
 }
 });
 

@@ -14,7 +14,7 @@ from numpy import frombuffer,uint8,argmax,array
 # import numpy as np
 from werkzeug.utils import secure_filename
 from pymongo import MongoClient
-# from custom_modules.yogaposturedetection import MoveNetPreprocessor, load_pose_landmarks, model, class_names
+from custom_modules.yogaposturedetection import MoveNetPreprocessor, load_pose_landmarks, model, class_names
 # import custom_modules.yogaposturedetection as ygp
 import custom_modules.yogaposecorrection as ypc
 import jsonpickle
@@ -106,7 +106,6 @@ mail = Mail(app)
 class User:
     def start_session(self,user,verification_status=False):
         # global preprocessor
-        from custom_modules.yogaposturedetection import MoveNetPreprocessor
         session['logged_in']=True
         session['user']=user
         session['user_id']=user['_id']
@@ -269,7 +268,7 @@ def login():
 
 @app.route('/callback')
 def callback():
-    from custom_modules.yogaposturedetection import MoveNetPreprocessor
+
     # print(session["state"])
     # print(request.args["state"]+" - request state")
     flow.fetch_token(authorization_response=request.url)
@@ -408,7 +407,6 @@ def get_session_data():
 @socketio.on('detection')
 def socket_detection(data):
     # sbuf = StringIO()
-    from custom_modules.yogaposturedetection import model,load_pose_landmarks,class_names
     stringData=""
     # sbuf.write(data_image)
     session = json.loads(data['session_data'])
@@ -468,7 +466,6 @@ def socket_detection(data):
 @socketio.on('correction')
 def socket_correction(data):
     # sbuf = StringIO()
-    from custom_modules.yogaposturedetection import model,load_pose_landmarks,class_names
     stringData=""
     # sbuf.write(data_image)
     command=""
@@ -588,7 +585,6 @@ def benefits():
 @app.route('/detection/', methods = ['POST','GET'])
 @login_required
 def detection():   
-    from custom_modules.yogaposturedetection import model,load_pose_landmarks,class_names
     app.config['UPLOAD_FOLDER'] = os.path.join(session['user_header'], 'uploadedimage/chair')
 
     preprocessorJSON = session['preprocessor']

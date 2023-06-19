@@ -115,8 +115,30 @@ footer{
 #canvasOutput{
     width: 700px;
     height: 500px;
-    display:none
+    display:none;
+    position:relative
 }
+
+#fullscreenButton {
+    position: relative;
+    top: 500px;
+    left: 670px;
+    z-index: 9999;
+    /* background-color: #ffffff; */
+    /* color: #000000; */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* #fullscreenButton svg {
+    fill: blue;
+  } */
 /* .navbuttons a:hover{
     background: white;
     color:black;
@@ -544,3 +566,6 @@ select {
     
 }
 
+#canvasContainer {
+    position: relative;
+  }
